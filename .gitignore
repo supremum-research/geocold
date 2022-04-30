@@ -8,6 +8,8 @@ videos
 plots
 notebooks
 _research
+build 
+# don't include the build directory
 
 ################################################################################
 #                                    Julia                                     #
