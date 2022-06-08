@@ -1,7 +1,8 @@
-#ifndef COMPGEO_INCLUDE_RAYTRACER_HPP
-#define COMPGEO_INCLUDE_RAYTRACER_HPP
+#ifndef GEOCOLD_INCLUDE_PRIMITIVES_RAY_HPP 
+#define GEOCOLD_INCLUDE_PRIMITIVES_RAY_HPP 
 
-#include "compgeo.hpp"
+#include "point.hpp"
+
 namespace geocold {
 
 /* 
@@ -11,14 +12,16 @@ namespace geocold {
  * parametric equation for this.
  *
  * p(t) = e + t(s-e)
- *
- */
+ * */
 
 template <typename T>
 class Ray {
 private:
   Point3<T> origin;
   Point3<T> direction;
+  T tmin; // based on directX ray tracer
+  T tmax;
+   
 
 public:
   // p(t) = e + t(s-e)

@@ -1,8 +1,7 @@
-add_subdirectory(camera)
-add_subdirectory(primitives) #primitives include rays, points, lines, and other stuff.
-# add_subdirectory()
-# add_subdirectory()
-# add_subdirectory()
-# add_subdirectory()
+add_subdirectory(algorithms)
+add_subdirectory(primitives)
+
+target_include_directories(algorithms INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(algorithms INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 
