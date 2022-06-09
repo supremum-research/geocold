@@ -1,4 +1,4 @@
-add_library(algortihms INTERFACE 
+add_library(algorithms INTERFACE 
   algortihms.hpp
   convexhull.hpp
   )

@@ -1,5 +1,5 @@
 #PREAMBLE
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.20)
 # minimum version
 #set(projectName DSA)
 #make it necessary to use c++17
@@ -17,9 +17,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
-include(ConfigSafeGuards)
+#include(ConfigSafeGuards)
 
-include(CTest)
+#include(CTest)
 
 
 set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Enable benchmark self-testing?")
@@ -44,26 +44,27 @@ endif()
 # haven't put -Werror cause apparently it's sh**
 
 #llvm stuff
-#-----------------------x----------------------#
-find_package(LLVM REQUIRED CONFIG)
-message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
-message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+# #-----------------------x----------------------#
+# find_package(LLVM REQUIRED CONFIG)
+# message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+# message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+#
+# include_directories(${LLVM_INCLUDE_DIRS})
+# separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
+# add_definitions(${LLVM_DEFINITIONS_LIST})
+# #-----------------------x----------------------#
+#
+#
+# # add the StaticArray interface libray
+# #src/DSTK/StaticArray.cpp)
+#
+# 	# add_executable(main_executable main/main.cpp)
+#
+# llvm_map_components_to_libnames(llvm_libs support core irreader)
 
-include_directories(${LLVM_INCLUDE_DIRS})
-separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
-add_definitions(${LLVM_DEFINITIONS_LIST})
-#-----------------------x----------------------#
-
-
-# add the StaticArray interface libray
-#src/DSTK/StaticArray.cpp)
-
-	# add_executable(main_executable main/main.cpp)
-
-llvm_map_components_to_libnames(llvm_libs support core irreader)
-
-include(ConfigGBench)
+# include(ConfigGBench)
 # add_subdirectory(main)
+find_package(benchmark REQUIRED)
 add_subdirectory(include)
 add_subdirectory(bench)
 add_subdirectory(unittests)
