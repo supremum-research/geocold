@@ -19,15 +19,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 #include(ConfigSafeGuards)
 
-#include(CTest)
+include(CTest)
 
 
-set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Enable benchmark self-testing?")
+#set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Enable benchmark self-testing?")
 
 # Fix dependency download
 # https://github.com/google/benchmark/issues/564
 #
-set(BENCHMARK_DOWNLOAD_DEPENDENCIES ON CACHE BOOL "Download dependencies?")
+#set(BENCHMARK_DOWNLOAD_DEPENDENCIES ON CACHE BOOL "Download dependencies?")
 
 if( MSVC ) 
 	add_compile_options(/W4 /w14640 /w14242 /w14254 
@@ -64,7 +64,18 @@ endif()
 
 # include(ConfigGBench)
 # add_subdirectory(main)
-find_package(benchmark REQUIRED)
+#find_package(benchmark REQUIRED)
+find_package(OpenGL REQUIRED)
+add_subdirectory(external/glfw)
+add_subdirectory(external/glad)
+# add_subdirectory(external/benchmark)
+add_subdirectory(external/googletest)
 add_subdirectory(include)
-add_subdirectory(bench)
+
+# add_subdirectory(bench)
 add_subdirectory(unittests)
+add_subdirectory(main)
+
+
+
+

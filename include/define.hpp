@@ -71,14 +71,13 @@ FORCEINLINE void reportAssertionFailure(
 }
 
 #ifdef _DEBUG
-#define ASSERT(expr) { \
+#define ASSERT_MSG(expr, message) { \
   if (expr) { \
   } else { \
-    reportAssertionFailure(#expr, "", __FILE__, __LINE__); \
+    reportAssertionFailure(#expr, #message __FILE__, __LINE__); \
     debugBreak(); \
   } \
 }
-#endif
 
 
 

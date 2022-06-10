@@ -1,25 +1,25 @@
 
 enable_testing()
 
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/refs/heads/master.zip 
-)
+# include(FetchContent)
+# FetchContent_Declare(
+#   googletest
+#   URL https://github.com/google/googletest/archive/refs/heads/master.zip 
+# )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+# set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+# FetchContent_MakeAvailable(googletest)
 
 list (APPEND L_UNITTESTS
-	testsarray
+	firsttest	
 	)
 
-include(GoogleTest)
+# include(GoogleTest)
+include_directories(external/googletest)
 
 foreach(unittest IN LISTS L_UNITTESTS)
 	add_executable(${unittest} ${unittest}.cpp)
-	target_link_libraries(${unittest} PUBLIC StaticArray SortingAlgorithms ${llvm_libs} gtest_main)#${PROJECT_NAME} gtest_main)
-	gtest_discover_tests(${unittest})
+	target_link_libraries(${unittest} PUBLIC gtest_main)#${PROJECT_NAME} gtest_main)
 endforeach()
 
 
