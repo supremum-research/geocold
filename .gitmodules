@@ -4,3 +4,6 @@
 [submodule "external/benchmark"]
 	path = external/benchmark
 	url = git@github.com:google/benchmark.git
+[submodule "external/imgui"]
+	path = external/imgui
+	url = git@github.com:ocornut/imgui.git
