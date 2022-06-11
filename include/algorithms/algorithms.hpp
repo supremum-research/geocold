@@ -11,7 +11,7 @@ struct Algorithm {
   Algorithm(Algorithm&&) noexcept = default; //move ctor
   Algorithm& operator=(const Algorithm&) = default;  //copy assignment 
   Algorithm& operator=(Algorithm&&) noexcept = default; //move assignment
-}
+};
 
 
 
