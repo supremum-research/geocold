@@ -1,4 +1,4 @@
-
+find_package(Threads)
 enable_testing()
 
 # include(FetchContent)
@@ -15,11 +15,11 @@ list (APPEND L_UNITTESTS
 	)
 
 # include(GoogleTest)
-include_directories(external/googletest)
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 foreach(unittest IN LISTS L_UNITTESTS)
 	add_executable(${unittest} ${unittest}.cpp)
-	target_link_libraries(${unittest} PUBLIC gtest_main)#${PROJECT_NAME} gtest_main)
+	target_link_libraries(${unittest} PUBLIC gtest gtest_main geocold pthread)#${PROJECT_NAME} gtest_main)
 endforeach()
 
 

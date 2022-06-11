@@ -1,10 +1,11 @@
 #include <benchmark/benchmark.h>
+#include <iostream>
 
 static void BM_SomeFunction(benchmark::State& state) {
   // Perform setup here
   for (auto _ : state) {
     // This code gets timed
-    SomeFunction();
+    std::cout << "Hello World\n";
   }
 }
 // Register the function as a benchmark

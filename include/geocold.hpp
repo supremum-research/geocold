@@ -6,7 +6,7 @@
 #include "primitives/point.hpp"
 #include "primitives/ray.hpp"
 #include "primitives/vec3.hpp"
-#include "definitions.hpp"
+// #include "define.hpp"
 
 
 #endif
