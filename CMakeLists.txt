@@ -40,12 +40,12 @@ function (CHECK_EXTERNAL NAME DIR)
   endif ()
 endfunction ()
 
-CHECK_EXTERNAL ("glad" "glad/include")
-CHECK_EXTERNAL ("glfw" "glfw/docs")
-CHECK_EXTERNAL ("glm" "glm/glm")
-CHECK_EXTERNAL ("imgui" "imgui/examples")
-CHECK_EXTERNAL ("glad" "glad/include")
-
+#CHECK_EXTERNAL ("glad" "glad/include")
+# CHECK_EXTERNAL ("glfw" "glfw/docs")
+# CHECK_EXTERNAL ("glm" "glm/glm")
+# CHECK_EXTERNAL ("imgui" "imgui/examples")
+# CHECK_EXTERNAL ("glad" "glad/include")
+#
 enable_testing()
 
 find_package(Sanitizers)
