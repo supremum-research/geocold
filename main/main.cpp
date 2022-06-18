@@ -1,6 +1,6 @@
 #include <iostream>
 #include <array>
-#include <geocold>
+#include "geocold/primitives/line"
 
 using namespace geocold;
 
