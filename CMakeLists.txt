@@ -12,7 +12,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #include(ConfigSafeGuards)
 
 include(CTest)
-
 #for compile time warnings
 if( MSVC ) 
 	add_compile_options(/W4 /w14640 /w14242 /w14254 
@@ -112,9 +111,11 @@ endif()
 set (GEOCOLD_SOURCE_HEADERS
 	include/geocold.hpp
 	include/define.hpp
-	include/geocold/
-
-
+	include/primitives/light.hpp
+	include/primitives/line.hpp
+	include/primitives/point.hpp
+	include/primitives/ray.hpp
+	include/primitives/vec3.hpp
 	)
 
 
@@ -130,11 +131,15 @@ set (BUILD_SHARED_LIBS OFF)
 
 # add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/external)
 
+
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glfw)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glad)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/googletest)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/include)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/benchmark)
+
+
+# bench, unittests and main
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/bench)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/unittests)

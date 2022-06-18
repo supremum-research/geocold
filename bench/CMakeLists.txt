@@ -1,8 +1,5 @@
 
-  
-find_package(Threads REQUIRED)
-find_package(benchmark REQUIRED)
-#include(${CMAKE_SOURCE_DIR}/cmake/GoogleBenchmarks.cmake)
+find_package(benchmark)
 
 list (APPEND L_BENCH
 	firstbench
