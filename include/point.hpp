@@ -2,53 +2,76 @@
 #define GEOCOLD_INCLUDE_PRIMITIVES_POINT_HPP 
 
 #include <array>
+#include <cassert>
+#include "vec3.hpp"
 
 namespace geocold {
 
-template <std::size_t Dim, typename T = double>
-class Point {
+/// A point has the following operations defined on it. 
+/// 1. [] indexing that checks the input index 
+/// 2. 
+template <typename T>
+class Point3 {
+  private: 
+    T x_;
+    T y_;
+    T z_;
+
+  [[nodiscard]] constexpr T squared_l2_norm() const noexcept { return x_ * x_ + y_ * y_ + z_ * z_; }
+
   public:
-    using size_type = std::size_t; using iteration_type = size_type;
 
-    constexpr explicit Point(std::array<T,Dim> coords) : m_comps{coords} {}
-    //needs to implmement addition and subtraction between points and also scalar multiplication
-    
-    [[nodiscard]]
-    constexpr std::array<T, Dim> to_array() const {
-      return this->m_comps;
-    }
+  using size_type = std::size_t;
+  using index_type = size_type; 
+  using element_type = T;
+
+  constexpr Point3() noexcept : x_{0}, y_{0}, z_{0} {} //default constructor
+
+  constexpr Point3(T x_f, T y_f, T z_f) noexcept : x_{x_f}, y_{y_f}, z_{z_f} {} // constructor
+
+  constexpr explicit Point3<T>(const Vec3<T>& vec) noexcept { //get a point from a vector
+    return Point3(vec.x(), vec.y(), vec.z());
+  }
+
+  
+  [[nodiscard]] constexpr T x() const noexcept { return x_; }
+
+  [[nodiscard]] constexpr T y() const noexcept { return y_; }
+
+  [[nodiscard]] constexpr T z() const noexcept{ return z_; }
+
+  [[nodiscard]] constexpr T operator[](index_type idx) const { 
+    assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
+    return idx == 0 ?  x_
+                    : idx == 1 ? y_
+                    : z_;
+  }
+
+  [[nodiscard]] constexpr T& operator[](index_type idx) { 
+    assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
+    return idx == 0 ?  x_
+                    : idx == 1 ? y_
+                    : z_;
+  }
 
 
-    //auto to_array(const Point<Dim, T>& point) {
-    //  auto arr = std::array<T, Dim>();
-    //  auto count = static_cast<typename Point<Dim, T>::iteration_type>(0);
+  [[nodiscard]] constexpr Vec3<T> operator-(const Point3<T>& rhs) const noexcept {
+    return Vec3<T>(this->x_ - rhs.x(), this->y_ - rhs.y(), this->z_ - rhs.z());
+  }
 
-    //  for (auto elem : point)  {
-    //    arr[count] = elem;
-    //    count += 1;
-    //  }
+  [[nodiscard]] constexpr T distancefromorigin() const { return std::sqrt(squared_l2_norm()); }
 
-    //  return arr;
-    //}
-
-  private: // fields
-    std::array<T, Dim> m_comps; 
 };
 
 
 
-/* -------- TYPE ALIASES FOR CONVENIENCE -------- */
-using Point1f = Point<1, double>;
-using Point2f = Point<2, double>;
-using Point3f = Point<3, double>;
-
-using Point1f0 = Point<1, float>;
-using Point2f0 = Point<2, float>;
-using Point3f0 = Point<3, float>;
-
-template <typename T>
-using Point3 = Point<3,T>;
+/* -------- typedefs for Point3                             -------- */
+using Point3f0 = Point3<float>;
+using Point3f = Point3<double>;
+using Point3i = Point3<int>;
 /* --------                              -------- */
+
+
 
 
 } //namespace geocold
