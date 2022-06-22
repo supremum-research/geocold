@@ -12,9 +12,3 @@ struct Window {
 
 };
 
-
-struct RenderingApplication {
-
-};
-
-

@@ -5,52 +5,42 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+//#include "rendererwindow.hpp"
 
-#include "rendererwindow.hpp"
+const uint32_t WIDTH = 800;
+const uint32_t HEIGHT = 600;
 
 namespace renderer {
 
-	const uint32_t WIDTH = 800;
-	const uint32_t HEIGHT = 600;
-
 	class RenderApplication {
-		public:
 
-			void run() {
-				initialize_window();
-				initialize_vulkan();
-				mainloop();
-				cleanup();
-			}
+		public:
+			void run();
 
 		private:
+			//private methods
+			void initialize_window();
+
+			void initialize_vulkan();
+
+			void mainloop();
+
+			void cleanup();
+
+			void createinstance();
+
+		private: //fields
 			GLFWwindow* window;
+			VkInstance instance;
+			uint32_t width { WIDTH };
+			uint32_t height { HEIGHT };
 
-			void initialize_window() {
-				glfwInit();
-				glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-				glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-				window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan Window", nullptr, nullptr);
-			}
-
-			void initialize_vulkan() {
-				
-			}
-
-			void mainloop() {
-				while (!glfwWindowShouldClose(window)) {
-					glfwPollEvents();
-				}
-			}
-
-			void cleanup() {
-				glfwDestroyWindow(window);
-				glfwTerminate();
-			}
 	};
+
 
 } //namespace renderer 
 
 
 
 #endif
+

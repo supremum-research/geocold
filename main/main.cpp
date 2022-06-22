@@ -3,12 +3,20 @@
 #include <array>
 
 //headers from our own library
-#include "extra.hpp"
+
+#include "geocold.hpp"
 #include "rendererapplication.hpp"
 
-using namespace renderer;
 
 int main() {
-	RenderApplication app;
-	app.run();
+	renderer::RenderApplication app;
+
+	try {
+		app.run();
+	} catch (const std::exception& e) {
+		std::cerr << e.what() << '\n';
+		return EXIT_FAILURE;
+	}
+
+	return EXIT_SUCCESS;
 }

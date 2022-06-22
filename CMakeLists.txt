@@ -118,12 +118,12 @@ set (GEOCOLD_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/include/geocold.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/define.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererapplication.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererwindow.hpp
+	#${CMAKE_CURRENT_SOURCE_DIR}/include/rendererwindow.hpp
 )
 
 set (GEOCOLD_SOURCES 
 	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererapplication.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererwindow.cpp
+	#	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererwindow.cpp
 	)
 
 	
@@ -159,9 +159,9 @@ add_library(geocold_lib STATIC
 # 	include
 # )
 
-target_include_directories(geocold_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw/include)
+# target_include_directories(geocold_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw/include)
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+# set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 
 set (BUILD_SHARED_LIBS OFF)
@@ -169,6 +169,7 @@ set (BUILD_SHARED_LIBS OFF)
 # add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/external)
 
 target_include_directories(geocold_lib PUBLIC
+	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${GLFW_INCLUDE}
 	${GLAD}
 	${VULKAN_INCLUDE_DIRS}
@@ -177,16 +178,13 @@ target_include_directories(geocold_lib PUBLIC
 set (ALL_GEOCOLD_LIBS
 	geocold_lib
 	glfw
+	Vulkan::Vulkan
 	glad
 	OpenGL::GL
 	) 
 
 add_executable(geocold_main ${GEOCOLD_MAIN_SOURCES}) #${GEOCOLD_HEADERS})
-target_link_libraries(geocold_main geocold_lib ${ALL_GEOCOLD_LIBS})
-#target_include_directories(geocold_main PUBLIC ${VULKAN_INCLUDE_DIRS})
+target_link_libraries(geocold_main ${ALL_GEOCOLD_LIBS})
+target_include_directories(geocold_main PUBLIC ${VULKAN_INCLUDE_DIRS})
 target_include_directories(geocold_main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-
-
-
 
