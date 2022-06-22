@@ -10,8 +10,10 @@ namespace renderer {
 
   class RenderWindow {
     private:
+      int m_a;
     public:
-      int a;
+      RenderWindow() = default;
+      explicit RenderWindow(int f_a) :m_a{f_a} {}
 
   };
 

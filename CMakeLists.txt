@@ -109,7 +109,7 @@ endif()
 ################################################
 # setting the headers and sources of our library
 
-set (GEOCOLD_SOURCE_HEADERS
+set (GEOCOLD_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/include/light.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/line.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/point.hpp
@@ -117,13 +117,31 @@ set (GEOCOLD_SOURCE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/include/vec3.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/geocold.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/define.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererapplication.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererwindow.hpp
 )
+
+set (GEOCOLD_SOURCES 
+	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererapplication.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererwindow.cpp
+	)
+
+	
 
 # set (GEOCOLD_TEST_SOURCES
 # 	testbench/firsttest.cpp
 # 	testbench/firstbench.cpp
 #
 # )
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glfw)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glad)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/googletest)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/benchmark)
+
+set(GLFW_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw/include)
+set(GLAD ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw/include)
 
 set(GEOCOLD_MAIN_SOURCES
 	main/main.cpp
@@ -132,13 +150,16 @@ set(GEOCOLD_MAIN_SOURCES
 # add_executable(geocold_test ${GEOCOLD_TEST_SOURCES})
 
 
-add_library(geocold_lib INTERFACE
-	${GEOCOLD_SOURCE_HEADERS}
+add_library(geocold_lib STATIC 
+	${GEOCOLD_HEADERS}
+	${GEOCOLD_SOURCES}
 	)
 
 # target_include_directories(geocold_lib PUBLIC	
 # 	include
 # )
+
+target_include_directories(geocold_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw/include)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -147,15 +168,24 @@ set (BUILD_SHARED_LIBS OFF)
 
 # add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/external)
 
-add_executable(geocold_main ${GEOCOLD_MAIN_SOURCES} ${GEOCOLD_SOURCE_HEADERS})
-target_include_directories(geocold_main PUBLIC ${VULKAN_INCLUDE_DIRS})
+target_include_directories(geocold_lib PUBLIC
+	${GLFW_INCLUDE}
+	${GLAD}
+	${VULKAN_INCLUDE_DIRS}
+	)
+
+set (ALL_GEOCOLD_LIBS
+	geocold_lib
+	glfw
+	glad
+	OpenGL::GL
+	) 
+
+add_executable(geocold_main ${GEOCOLD_MAIN_SOURCES}) #${GEOCOLD_HEADERS})
+target_link_libraries(geocold_main geocold_lib ${ALL_GEOCOLD_LIBS})
+#target_include_directories(geocold_main PUBLIC ${VULKAN_INCLUDE_DIRS})
 target_include_directories(geocold_main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glfw)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glad)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/googletest)
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/benchmark)
 
 
 

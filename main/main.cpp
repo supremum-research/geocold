@@ -4,11 +4,11 @@
 
 //headers from our own library
 #include "extra.hpp"
-#include "geocold.hpp"
+#include "rendererapplication.hpp"
 
-using namespace geocold;
+using namespace renderer;
 
 int main() {
-	auto app {RenderingApplication()};
+	RenderApplication app;
 	app.run();
 }
