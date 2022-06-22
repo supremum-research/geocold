@@ -1,10 +1,14 @@
+// libc++ headers + STL headers => basically standard library content at the top
 #include <iostream>
 #include <array>
-#include "geocold/primitives/line"
+
+//headers from our own library
+#include "extra.hpp"
+#include "geocold.hpp"
 
 using namespace geocold;
 
 int main() {
-  Line<2, float> a(Point<2,float>({1,2}), Point<2,float>({1,2}));
-  std::cout << "Hello World\n";
+	auto app {RenderingApplication()};
+	app.run();
 }

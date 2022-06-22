@@ -12,16 +12,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #include(ConfigSafeGuards)
 
 include(CTest) #for compile time warnings if( MSVC ) 
+if(MSVC)
 	add_compile_options(/W4 /w14640 /w14242 /w14254 
 	/w14265 /w14263 /w14287 /we4289 /w14296 /w14311 /w14545 /w14546 /w14547 /w14549 
 	/w14555 /w14619 /w14640 /w14826 /w14905 /w14906 /w14928 )
 else() 
-	add_compile_options(-Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -Wold-style-cast 
-											-Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion 
-											-Wsign-conversion -Wdouble-promotion -Wformat=2)
-	# add_compile_options(-Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic 
-	#-Wold-style-cast -Wunused -Wcast-align -Woverloaded-virtual -Wconversion -Wsign-conversion 
-	#-Wmisleading-indentation -Wnull-dereference -Wuseless-cast)
+		add_compile_options(-Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic -Wold-style-cast 
+												-Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion 
+												-Wsign-conversion -Wdouble-promotion -Wformat=2)
 endif()
 # haven't put -Werror cause apparently it's sh**
 
@@ -45,6 +43,7 @@ CHECK_EXTERNAL ("imgui" "imgui/backends")
 # find_package(Sanitizers)
 find_package(Threads)
 find_package(OpenGL REQUIRED)
+find_package(Vulkan REQUIRED FATAL_ERROR)
 enable_testing()
 
 # include (CheckLanguage)
@@ -111,45 +110,35 @@ endif()
 # setting the headers and sources of our library
 
 set (GEOCOLD_SOURCE_HEADERS
-	include/geocold.hpp
-	include/define.hpp
-	include/primitives/light.hpp
-	include/primitives/line.hpp
-	include/primitives/point.hpp
-	include/primitives/ray.hpp
-	include/primitives/vec3.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/light.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/line.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/point.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/ray.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/vec3.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/geocold.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/define.hpp
 )
 
-set (GEOCOLD_TEST_SOURCES
-	testbench/firsttest.cpp
-
-)
+# set (GEOCOLD_TEST_SOURCES
+# 	testbench/firsttest.cpp
+# 	testbench/firstbench.cpp
+#
+# )
 
 set(GEOCOLD_MAIN_SOURCES
 	main/main.cpp
 )
 
-add_executable(geocold_test ${GEOCOLD_TEST_SOURCES})
-add_executable(geocold_main ${GEOCOLD_MAIN_SOURCES})
+# add_executable(geocold_test ${GEOCOLD_TEST_SOURCES})
 
 
-add_library(geocold_lib STATIC
+add_library(geocold_lib INTERFACE
 	${GEOCOLD_SOURCE_HEADERS}
 	)
 
-add_library(geocold::geocold_lib ALIAS geocold_lib)
-
-target_include_directories(geocold_lib PUBLIC	
-	include
-	external
-	)
-
-
-
-
-
-
-
+# target_include_directories(geocold_lib PUBLIC	
+# 	include
+# )
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -158,19 +147,16 @@ set (BUILD_SHARED_LIBS OFF)
 
 # add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/external)
 
+add_executable(geocold_main ${GEOCOLD_MAIN_SOURCES} ${GEOCOLD_SOURCE_HEADERS})
+target_include_directories(geocold_main PUBLIC ${VULKAN_INCLUDE_DIRS})
+target_include_directories(geocold_main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glfw)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glad)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/googletest)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/googletest)
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/benchmark)
 
-
-# bench, unittests and main
-
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/bench)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/unittests)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/main)
 
 
 
