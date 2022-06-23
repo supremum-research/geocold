@@ -29,8 +29,10 @@ class Point3 {
 
   constexpr Point3(T x_f, T y_f, T z_f) noexcept : x_{x_f}, y_{y_f}, z_{z_f} {} // constructor
 
-  constexpr explicit Point3<T>(const Vec3<T>& vec) noexcept { //get a point from a vector
-    return Point3(vec.x(), vec.y(), vec.z());
+  constexpr explicit Point3<T>(const Vec3<T>& vec) noexcept {
+    this->x_ = vec.x();
+    this->y_ = vec.y();
+    this->z_ = vec.z();
   }
 
   
@@ -39,6 +41,12 @@ class Point3 {
   [[nodiscard]] constexpr T y() const noexcept { return y_; }
 
   [[nodiscard]] constexpr T z() const noexcept{ return z_; }
+
+  [[nodiscard]] constexpr T& x() noexcept { return x_; }
+
+  [[nodiscard]] constexpr T& y() noexcept { return y_; }
+
+  [[nodiscard]] constexpr T& z() noexcept{ return z_; }
 
   [[nodiscard]] constexpr T operator[](index_type idx) const { 
     assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));

@@ -18,6 +18,8 @@
 /// 8. norm => gives the l2 norm of the vector => is a scalar no.
 /// 9. squared_l2_norm => gives the square of the norm() of the vector.
 /// 10. += and -= operations between vectors used to implement + and - between vectors
+/// 11. Vec3 also supports multiplication with scalar on the left and on the right
+/// the one on the left is in file pointveccommon.hpp
 template <typename T>
 class Vec3 {
 //members
@@ -104,7 +106,41 @@ public:
 
   [[nodiscard]] constexpr T norm() const { return std::sqrt(squared_l2_norm()); }
 
+  [[nodiscard]] constexpr Vec3<T> operator*=(T scalar) {
+    this->m_x *= scalar;
+    this->m_y *= scalar;
+    this->m_z *= scalar;
+    return *this;
+  }
+
+  [[nodiscard]] constexpr Vec3<T> operator*(T scalar) {
+    auto temp = Vec3<T>(this->m_x, this->m_y, this->m_z);
+    temp *= scalar;
+    return temp;
+  }
+  
+  [[nodiscard]] constexpr Vec3<T> operator/(T scalar) {
+    auto temp = Vec3<T>(this->m_x, this->m_y, this->m_z);
+    temp *= static_cast<element_type>(1)/scalar;
+  }
+
+  [[nodiscard]] constexpr Vec3<T> abs() {
+    return Vec3<T>(std::abs(this->x()), std::abs(this->y()), std::abs(this->z()));
+  }
+
+
+  [[nodiscard]] Vec3<T> cross(const Vec3<T>& vec) const noexcept {
+    auto vecx = vec.x();
+    auto vecy = vec.y();
+    auto vecz = vec.z();
+    return Vec3<T>((this->y()) * vecz) - (this->z() * vecy),
+    (this->z() * vecx) - (this->x() * vecz),
+    (this->x() * vecy) - (this->y() * vecx);
+  }
+
 };
+
+
 
 
 using Vec3f0 = Vec3<float>;

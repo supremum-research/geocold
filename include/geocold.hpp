@@ -8,6 +8,7 @@
 #include "vec3.hpp"
 //#include "rendererwindow.hpp"
 #include "rendererapplication.hpp"
+#include "pointveccommon.hpp"
 // #include "define.hpp"
 
 
