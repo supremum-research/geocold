@@ -142,7 +142,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/benchmark)
 
 set(GLFW_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw/include)
-set(GLAD ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw/include)
+set(GLAD ${CMAKE_CURRENT_SOURCE_DIR}/external/glad/include)
 
 set(GEOCOLD_MAIN_SOURCES
 	main/main.cpp
