@@ -138,15 +138,20 @@ set (GEOCOLD_SOURCES
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glfw)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glad)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/googletest)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/googletest)
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/benchmark)
 
 set(GLFW_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw/include)
 set(GLAD ${CMAKE_CURRENT_SOURCE_DIR}/external/glad/include)
+set(GOOGLETEST ${CMAKE_CURRENT_SOURCE_DIR}/external/googletest/googletest/include)
 
 set(GEOCOLD_MAIN_SOURCES
 	main/main.cpp
 )
+
+
+set(GEOCOLD_TEST_SOURCES
+	testbench/firsttest.cpp)
 
 # add_executable(geocold_test ${GEOCOLD_TEST_SOURCES})
 
@@ -188,4 +193,10 @@ add_executable(geocold_main ${GEOCOLD_MAIN_SOURCES}) #${GEOCOLD_HEADERS})
 target_link_libraries(geocold_main ${ALL_GEOCOLD_LIBS})
 target_include_directories(geocold_main PUBLIC ${VULKAN_INCLUDE_DIRS})
 target_include_directories(geocold_main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+add_executable(geocold_test ${GEOCOLD_TEST_SOURCES})
+target_link_libraries(geocold_test ${ALL_GEOCOLD_LIBS} gtest_main)
+target_include_directories(geocold_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(geocold_test PUBLIC ${GOOGLETEST})
+
 
