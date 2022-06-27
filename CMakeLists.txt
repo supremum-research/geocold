@@ -119,6 +119,8 @@ set (GEOCOLD_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/include/define.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererapplication.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/pointveccommon.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/normal.hpp
+
 	#${CMAKE_CURRENT_SOURCE_DIR}/include/rendererwindow.hpp
 )
 

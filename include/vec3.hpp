@@ -7,6 +7,12 @@
 #include <cassert>
 
 
+template <typename T>
+class Point3;
+
+template <typename T>
+class Normal3;
+
 /// A vector has the following operations defined on it. 
 /// 1. multiplication with a negative scalar no. => all coordinates are made negative
 /// 2. [] indexing that checks the input index 
@@ -38,6 +44,19 @@ public:
 
   constexpr Vec3(T x_f, T y_f, T z_f) : m_x{x_f}, m_y{y_f}, m_z{z_f} {} // constructor
   
+  constexpr explicit Vec3(const Normal3<T>& normal) noexcept 
+    :m_x{normal.x()}, 
+     m_y{normal.y()},
+     m_z{normal.z()} 
+  {}
+  
+
+  constexpr explicit Vec3(const Point3<T>& point) noexcept 
+    :m_x{point.x()}, 
+     m_y{point.y()},
+     m_z{point.z()} 
+  {}
+
   [[nodiscard]] constexpr T x() const noexcept { return m_x; }
 
   [[nodiscard]] constexpr T y() const noexcept { return m_y; }
