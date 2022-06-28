@@ -1,10 +1,12 @@
-\documentclass[12pt]{article}
+\documentclass[a4paper, 12pt]{article}
 \usepackage{dirtree}
 %\usepackage{cite}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
+\usepackage{bm}
 \usepackage{pdfpages}
 \usepackage{fancyhdr}
+\usepackage[colorlinks, citecolor=black, urlcolor=blue, bookmarks=false, hypertexnames=true]{hyperref}
 \usepackage{biblatex}
 \addbibresource{bibilo.bib}
 \usepackage{tocloft}
@@ -12,6 +14,7 @@
 %\renewcommand{\cftsecpagefont}{}% Remove \bfseries from section titles' page in ToC
 \usepackage{verbatim}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage[utf8]{inputenc}
 %\newcommand\logoPath{TU-logo.png}
 %\newcommand\logoFileName{TU-logo}
@@ -20,10 +23,14 @@
 \usepackage{setspace}
 \usepackage{afterpage}
 \usepackage{tikz}
+\usepackage{amsthm}
 \usetikzlibrary{shapes,arrows, positioning}
 \usepackage{abstract}
 \renewcommand{\abstractnamefont}{\normalfont\large\bfseries}
 \newcommand\PROJECTNAME{Geocold}
+%\hypersetup{linkbordercolor=black}
+
+\newtheorem{definition}{Definition}
 
 
 \begin{document}
@@ -35,11 +42,22 @@
 		\addtocounter{page}{-1}
 		\newpage
 }
-\lstdefinestyle{mystyle}{frame=tb,
-						%language=C++,
-						tabsize=3,
-						numbersep=5pt}
-\lstset{style=mystyle}
+
+\lstset{language=C++,
+		tabsize=3,
+				frame=tb,
+                basicstyle=\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+                stringstyle=\color{red}\ttfamily,
+                commentstyle=\color{green}\ttfamily,
+                morecomment=[l][\color{magenta}]{\#}
+}
+%\lstdefinestyle{mystyle}{frame=tb,
+%						language=C++,
+%						tabsize=3,
+%						numbersep=5pt}
+
+%\lstset{style=mystyle}
 \begin{titlepage}
   \begin{center}
       \textbf{
@@ -77,7 +95,7 @@
 	 Date of Submission: \today \\
   	Expected Date of Completion: July, 2022 
 \end{titlepage}
-\myemptypage
+\newpage
 \begin{center}
 	{\large \textbf{\PROJECTNAME}}\\
 	by
@@ -136,47 +154,308 @@
 \end{itemize}
 
 \section{Introduction}
+	
+
 Rendering is the task of taking a scene composed of many geometric 
 objects arranged in 3D space and computing a 2D image that shows the object 
-as viewed from a particular viewpoint. The goal of our project \PROJECTNAME 
-is to implement an obj file loader which then creates a mesh of our scene,
-then finally we implement a ray tracer which will correctly color every
-object in the scene. Over the next few sections, we will try and set the mathematical 
-basis/principles used in our project and the API that we have attempted to design based on those 
-principles.
+as viewed from a particular viewpoint. The goal of our project \PROJECTNAME~is to create 
+a photorealistic renderer by implementing a .obj file loader which then 
+creates a mesh of our scene, then finally we implement a ray tracer 
+which will correctly color every object in the scene. 
+Over the next few sections, we will try and set the mathematical 
+basis/principles used in our project and the API that we have attempted to 
+design based on those principles.
 
-\section{Mathematical Basis}
+\section{Primitives}
+In order to explain the way our ray tracer works, we need to 
+set the ground with some basic mathematical 
+terms and notations. This will not only give us a more 
+technical basis for coming up with a good, mathematically 
+correct API, but also help someone using the same 
+piece of code to connect the pieces together. The next few of definitions are based on 
+Farin(\cite{farin}) and Goldman(\cite{Goldman1985IllicitEI}).
 
+\begin{definition}[Affine Combination in 3D]
+	An affine combination of vectors $\bm{x_{1}}, \bm{x_{2}}, \bm{x_{3}}$, 
+	$\bm{x_{i}}\in \mathbb{R}^{3}$
+	is the linear combination $\sum_{i=1}^{3}\lambda_{j}\bm{x_{i}}$ such that
+	$\sum_{j=1}^{3}\lambda_{j}=1$
+\end{definition}
 
+\begin{definition}[Affine Map]
+	$\Phi:\mathbb{R}^{3}\to \mathbb{R}^{3}$ is an affine map if it leaves affine combinations
+	invariant. That is, if
+	$$
+		\bm{a} = \sum_{j=1}^{3}\lambda_{j}\bm{x_{j}}, \sum_{j=1}^{3}\lambda_{j}=1, \bm{a}, x_{j}\in \mathbb{R}^{3}
+	$$
+	then, 
+	\begin{equation}\label{eqn:affinecomb}
+		\Phi(\bm{a}) = \sum_{j=1}^{3}\lambda_{j}\Phi(x_{j}); \Phi(x_{j}), \Phi(\bm{a}) \in \mathbb{R}^{3}.
+	\end{equation}
+\end{definition}
 
+The  equation\eqref{eqn:affinecomb} specifies the correct way of weighing the 
+points $x_{j}$ such that their weighted average is the point $\bm{a}$.
 
+In a given coordinate system, a point $\bm{x}$ is represented in the form of a coordinate triple, 
+which we also denote by $\bm{x}$. An affine map now takes the form 
+\begin{equation}\label{eqn:affinefunction}
+\Phi(\bm{x}) = A\bm{x} + \bm{v}
+\end{equation}
+The proof that equation\eqref{eqn:affinefunction} is affine is in Farin\cite{farin}.
 
-\subsection{On Basic Geometric Primitives}
+\subsection{On Points and Vectors}
+Goldman (see \cite{Goldman1985IllicitEI}) describes how points and vectors 
+are different and ought to be treated differently. Their work also describes 
+the way of dealing with their differences.
 
-\section{Existing Systems}
+Points have positions but not direction or length, while vectors have a direction 
+and a length. Not all operations that can be applied for vectors can be applied for 
+points. Points cannot be added, however addition like operations 
+such as an affine combination (also called \textit{barycentric combination}). Although 
+we will not go into a comprehensive list of operations that can be 
+applied for points and for vectors, we will list (table:\ref{table:pointvec}) out some of the common
+operations that are commonly implemented in any legitimate ray tracing API 
+(like PBRT\cite{pbrt} and the ones mentioned in Nvidia's Ray Tracing Gems\cite{Haines2019}). 
+We denote points with capital letters like $P$ or $Q$, and we denote vectors 
+with small boldface letters like $\bm{u}$ or $\bm{v}$.
 
+\setlength{\tabcolsep}{2em}
+\begin{table}[htb]
+	\centering
+	\begin{tabular}{|c c c|}\hline
+	Operation & Legal & Undefined	\\ \hline
+	Addition & $\bm{u}$+$\bm{v}$(v), P+$\bm{u}$(p) & P+Q \\
+	Subtraction & $\bm{u}$-$\bm{v}$(v), P-$\bm{u}$ & $\bm{u}-\bm{P}$\\
+	Scalar Multiplication & c.$\bm{v}$(v) & c.P \\
+	Dot Product & $\bm{u}.\bm{v}$(scalar) & P.$\bm{u}$, P.Q \\
+	Cross Product & $\bm{u}\times \bm{v}$(v) & P $\times$Q, P $\times\bm{u}$\\ \hline
+	\end{tabular}
+	\caption{Common operations defined for points and vectors. (v in the braces 
+	represents vector and p represents point)}
+	\label{table:pointvec}
+\end{table}
 
-\newpage
-The package is suppposed to have the following directory structure:
-\\
-\dirtree{%
-	.1 Geocold.
-	.2 papers.
-	.2 src.  
-	.2 testbench.  
-	.2 external.
-} 
+In C++, we can describe this behavior difference simply through the type system to 
+create an API that would at the least follow basic axioms in mathematics and algebra.
 
+To come up with a decent and mathematically correct ray tracer, it is essential 
+that we use the C++ type system to handle basic principles of algebra, and analysis.
 
-\subsection{System Block Diagram}
-The following is a block diagram of our system:
+\begin{lstlisting}[caption=Sample code for Point3 and Vec3 types]
+	template<typename T>
+	struct Vec3; //forward declaration
 
-\newpage
+	template <typename T>
+	struct Point3 {
+		T x_;
+		T y_;
+		T z_;
+		Point3(T x, T y, T z) noexcept 
+		   :x_{x}, 
+			y_{y}, 
+			z_{z} {}
+		
+		Point3 operator+(const Vec3<T>& vec) noexcept {
+			return Point3<T>{
+				x_ + vec.x_,
+				y_ + vec.y_,
+				z_ + vec.z_
+			};
+		} //this implements Point3 + Vec3
 
-\section{Project Scope}
+		Vec3<T> operator-(const Point3& rhs) noexcept {
+			return Vec3<T>{
+				x_ - rhs.x_,
+				y_ - rhs.y_,
+				z_ - rhs.z_
+			};
+		} // Point3 - Point3 -> Vec3 
 
+		Point3<T> operator-(const Vec3<T>& vec) noexcept {
+			return Point3<T>{
+				x_ - vec.x_,
+				y_ - vec.y_,
+				z_ - vec.z_
+			};
+		}
+	};
 
-\section{Project Schedule}
+	template <typename T>
+	struct Vec3<T> {
+		T x_;	
+		T y_;	
+		T z_;	
+
+		Vec3(T x, T y, T z) noexcept 
+			:x_{x}
+			,y_{y}
+			,z_{z} {}
+		
+		Vec3<T> operator-() const {
+			return Vec3<T>{
+				-x_,
+				-y_, 
+				-z_
+			};
+		}
+
+		Vec3<T> operator*(T scalar) {
+			return Vec3<T>{
+				x*scalar,
+				y*scalar,
+				z*scalar
+			};
+		}
+
+//other trivial operations like 
+//vector addition, 
+//subtraction, dot product and cross 
+//product are also implemented.
+//Vec3 - Point3 is not implemented 
+//as it is an invalid operation.
+	};
+\end{lstlisting}
+
+\subsection{Other Primitives}
+\begin{definition}[Normal]
+	A surface normal is a vector perpendicular to a surface at a 
+	particular position.
+\end{definition}
+
+It is necessary to have a separate type for normals as 
+they are treated differently to vectors (normals take 
+object properties into account). Advanced ray tracers 
+(like \cite{pbrt}) also take into account the various
+partial derivatives of the surface normal with respect
+to the local parametrization of the curve. In 
+ray tracing, it is essential to know the normal 
+to the surface at which the ray-triangle 
+intersection test is satisfied so as to 
+compute the direction in which the ray will be reflected next.
+
+\begin{definition}[Ray]
+	We represent a ray as a parametric line in \PROJECTNAME.
+	If $\bm{a}$ and $\bm{b}$ are two points such that 
+	the ray starts at $\bm{a}$ then, the line between 
+	$\bm{a}$ and $\bm{b}$ is given by the parametric equation: 
+	\begin{equation}
+		\bm{r}(t) = (1-t)\bm{a} + t\bm{b}, t\in [0,1]
+	\end{equation}
+\end{definition}
+	This is obviously an affine combination of the points $\bm{a}$ and $\bm{b}$.
+	However, on slight modification, we can implement a ray 
+	as a linear combination of a point and a vector as such:
+	\begin{equation}
+		\bm{r}(t) = \bm{a} + t(\bm{b}-\bm{a})
+	\end{equation}
+
+	But, we need the parameter $t$ to be in a set interval so
+	that we won't have to track the ray farther than we need to
+	(upto when the ray passes the ray-triangle intersection test).
+	The ray can also not go behind the camera or eye.
+	So, we need fields $tmin$ and $tmax$ for our struct.
+
+	\begin{lstlisting}
+		struct Ray {
+			Point3<float> a;
+			float tmin;
+			Vec3<T> direction; //b-a
+			float tmax;
+		}; //ray is left unparametrized
+	\end{lstlisting}
+
+	Since most computer graphics projects
+	define common camera models, we won't go
+	to depth on the camera model for ray tracing in 
+	this paper. 
+
+	We will finally end this section with a few words 
+	on radiosity and light model.
+
+\subsection{Raidosity and Light Models}
+\begin{center}
+\begin{figure}
+	\includegraphics[width=0.6\linewidth, scale=0.8]{lightem.png}
+	\centering
+	\caption{Light as an electromagnetic wave.}
+\end{figure}
+\end{center}
+Light is an electromagnetic wave that propagates through space. 
+A convincing computer model for light would incorporate into it 
+the direction of propagation, speed, wave-lenth, amplitude, polarization 
+and so on. Although not all of these parameters are incorporated in 
+standard ray tracers, ours will be a lightweight one in which we 
+shall model light without any polarizability.
+Our ray tracer however, should be able to handle the effect of 
+the wavelength of light in the ways it behaves after striking 
+a surface/object in the scene. Our 
+ray tracer will disregard the spectrums and 
+only deal with RGB. First, let's define some terms from radiometry.
+
+\begin{definition}[Radiant Energy]
+Electromagnetic radiations carry energy through space.
+The energy carried by a single photon emitted by a source 
+of illumination is given by 
+$$
+	Q = \cfrac{hc}{\lambda}
+$$
+\end{definition}
+
+\begin{definition}[Radiant Flux]
+Radiant Flux or power is defined as the total amount of energy passing 
+through a surface or region of space per unit time.
+$$
+	\Phi = \cfrac{dQ}{dt}
+$$
+\end{definition}
+
+\begin{definition}[Radiant Flux Density]
+	Radiant Flux Density is the radiant flux per unit area at a 
+	point on a surface, where the surface could be real or imaginary.
+\end{definition}
+
+\begin{definition}[Irradiance E]
+	The radiant flux arriving at a surface per unit area 
+	is called irradiance. 
+	$$
+		E = \cfrac{d\Phi}{dA}
+	$$
+\end{definition}
+
+\begin{definition}[Radiant Exitance M]
+	The radiant flux leaving from a surface per unit area 
+	is called radiant exitance. 
+	$$
+		M =  \cfrac{d\Phi}{dA}
+	$$
+\end{definition}
+\begin{center}
+\begin{figure}
+	\includegraphics[width=0.8\linewidth, scale=0.6]{raynormal.png}
+	\centering
+	\caption{Ray of Light Intersecting a surface}
+	\label{figure:rayandnormal}
+\end{figure}
+\end{center}
+
+\begin{definition}[Radiance]
+	Imagine an elemental cone to represent a 
+	ray that intersects a surface making an 
+	angle $\theta$ with the surface normal as in figure~\ref{figure:rayandnormal}.
+	The projected area of the ray-surface intersection area $dA$
+	is $dAcos\theta$. The radiance is the radiant flux 
+	density per unit elemental cone or per unit solid 
+	angle $d\omega$. 
+	$$
+		L = \cfrac{d^{2} \Phi}{dA cos\theta d\omega}
+	$$
+\end{definition}
+In order to avoid the complexity of having to take limits to 
+deal with the radiance at above and below a surface, we define radiance 
+arriving at a point on a surface and the radiance leaving that point. 
+
+Consider a point p on the surface of an object. Let $L_{i}(\bm{p}, \bm{\omega})$
 
 
 \newpage

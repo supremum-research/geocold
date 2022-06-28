@@ -17,7 +17,6 @@ class Point3 {
     T y_;
     T z_;
 
-  [[nodiscard]] constexpr T squared_l2_norm() const noexcept { return x_ * x_ + y_ * y_ + z_ * z_; }
 
   public:
 
@@ -67,7 +66,9 @@ class Point3 {
     return Vec3<T>(this->x_ - rhs.x(), this->y_ - rhs.y(), this->z_ - rhs.z());
   }
 
-  [[nodiscard]] constexpr T distancefromorigin() const { return std::sqrt(squared_l2_norm()); }
+  [[nodiscard]] constexpr T squared_distancefromorigin() const noexcept { return x_ * x_ + y_ * y_ + z_ * z_; }
+
+  [[nodiscard]] constexpr T distancefromorigin() const { return std::sqrt(squared_distancefromorigin()); }
 
 };
 
