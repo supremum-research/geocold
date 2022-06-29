@@ -79,7 +79,4 @@ FORCEINLINE void reportAssertionFailure(
   } \
 }
 
-
-
-
 #endif //GEOCOLD_INCLUDE_DEFINE_HPP

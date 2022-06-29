@@ -45,6 +45,7 @@ find_package(Threads)
 find_package(OpenGL REQUIRED)
 find_package(Vulkan REQUIRED FATAL_ERROR)
 enable_testing()
+enable_language(CUDA)
 
 # include (CheckLanguage)
 #

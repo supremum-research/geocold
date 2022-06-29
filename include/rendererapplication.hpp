@@ -29,9 +29,12 @@ namespace geocold {
 
 			void createinstance();
 
+			void pickPhysicalDevice();
+
 		private: //fields
 			GLFWwindow* window;
 			VkInstance instance;
+			VkPhysicalDevice pdev{ VK_NULL_HANDLE };
 			uint32_t width { WIDTH };
 			uint32_t height { HEIGHT };
 

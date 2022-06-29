@@ -2,6 +2,7 @@
 #define GEOCOLD_INCLUDE_PRIMITIVES_RAY_HPP 
 
 #include "point.hpp"
+#include "vec3.hpp"
 
 namespace geocold {
 
@@ -18,13 +19,27 @@ template <typename T>
 class Ray {
 private:
   Point3<T> origin;
-  Point3<T> direction;
+  Vec3<T> direction;
   T tmin; // based on directX ray tracer
   T tmax;
+
+  
+
    
 
 public:
-  // p(t) = e + t(s-e)
+  Ray() = default;
+
+  Ray(const Vec3<T>& origin_,
+      const Vec3<T>& direction_,
+      T tmin_ = T(0),
+      T tmax_ = std::numeric_limits<T>::max) 
+    :origin{origin_}
+    ,direction{direction_}
+    ,tmin{tmin_}
+    ,tmax{tmax_}
+    {}
+
   Point3<T> operator()(T param) {
     return (origin + param * direction);
   }

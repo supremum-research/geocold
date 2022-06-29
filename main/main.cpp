@@ -9,7 +9,7 @@
 
 
 int main() {
-	renderer::RenderApplication app;
+	geocold::RenderApplication app;
 
 	try {
 		app.run();

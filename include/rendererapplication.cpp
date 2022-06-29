@@ -28,6 +28,7 @@ namespace geocold {
 
   void RenderApplication::initialize_vulkan() {
     createinstance();
+    pickPhysicalDevice();
   }
 
 
@@ -67,6 +68,18 @@ namespace geocold {
 		initialize_vulkan();
 		mainloop();
 		cleanup();
+  }
+
+  void RenderApplication::pickPhysicalDevice() {
+    uint32_t devcount{0};
+    vkEnumeratePhysicalDevices(instance, &devcount, nullptr);
+
+    if (devcount == 0) {
+      throw std::runtime_error("Failed to find any GPUs with vulkan support.");
+    }
+
+
+
   }
 
 
