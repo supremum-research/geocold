@@ -13,12 +13,14 @@
 %\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 %\renewcommand{\cftsecpagefont}{}% Remove \bfseries from section titles' page in ToC
 \usepackage{verbatim}
+\usepackage{tcolorbox}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[utf8]{inputenc}
 %\newcommand\logoPath{TU-logo.png}
 %\newcommand\logoFileName{TU-logo}
 %\newcommand\logoScaleFactor{0.7}
+%\usepackage{epigraph}
 \usepackage{graphicx}
 \usepackage{setspace}
 \usepackage{afterpage}
@@ -143,6 +145,14 @@
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 
+\begin{tcolorbox}
+\begin{center}
+	\textit{``He who loves practice without theory is like the sailor who 
+	boards ship without a rudder and compass and never knows where he may cast.''} \\
+	---Leonardo Da Vinci, 1452-1519
+	\end{center}
+\end{tcolorbox}
+
 \section{Objectives}
 \begin{itemize}
 	\item To understand the graphics pipeline.
@@ -152,6 +162,7 @@
 	\item To gain a degree of familiarity with common graphics and GPU compute APIs, 
 	and understand their abstraction mechanisms.
 \end{itemize}
+
 
 \section{Introduction}
 	
@@ -166,7 +177,7 @@ Over the next few sections, we will try and set the mathematical
 basis/principles used in our project and the API that we have attempted to 
 design based on those principles.
 
-\section{Primitives}
+\section{Theory}
 In order to explain the way our ray tracer works, we need to 
 set the ground with some basic mathematical 
 terms and notations. This will not only give us a more 
@@ -236,11 +247,9 @@ with small boldface letters like $\bm{u}$ or $\bm{v}$.
 	\label{table:pointvec}
 \end{table}
 
-In C++, we can describe this behavior difference simply through the type system to 
-create an API that would at the least follow basic axioms in mathematics and algebra.
-
 To come up with a decent and mathematically correct ray tracer, it is essential 
-that we use the C++ type system to handle basic principles of algebra, and analysis.
+that we use the C++ type system to deal with these inherent differences between 
+mathematical constructs.
 
 \begin{lstlisting}[caption=Sample code for Point3 and Vec3 types]
 	template<typename T>
@@ -387,11 +396,45 @@ the direction of propagation, speed, wave-lenth, amplitude, polarization
 and so on. Although not all of these parameters are incorporated in 
 standard ray tracers, ours will be a lightweight one in which we 
 shall model light without any polarizability.
+The vector form for the law of reflection of light is as follows: 
+$$
+\bm{\omega}_{r}=\bm{\omega}_{i}-2\bm{n}_{p}(\bm{\omega}_{i}.\bm{n}_{p})
+$$
+
+\subsubsection{Whitted Ray Tracing}
+Turner Whitted in his paper 'An Improved Illumination Model
+For Shaded Display'\cite{whitted} highlighted the use of 
+geometric optics in rendering. He improved upon the Phong 
+illumination model\cite{Phong1975IlluminationFC} by replacing specular component
+in his model by the intensity S of the light coming from the direction of 
+specular reflection. His model also accounted for 
+transmitted light intensity by adding T term weighted by $k_{t}$ coefficient 
+of transmitted light contribution.
+
+\begin{equation}\label{eqn:whittedmodel}
+I = I_{a} + k_{d}\sum_{i}^{l}L_{i,d}(\bm{n}.\bm{\omega}_{i}) + k_{s}S + k_{t}T
+\end{equation}
+where: \\
+$I_{a}$ = intensity of ambient component \\
+$k_{d}\text{ and } k_{s}$ = diffues and specular coefficients \\ 
+$L_{i,d}$ = diffuse intensity of ith light source \\
+$\bm{n}$ = equivalent to reflection sharpness in Phong\cite{Phong1975IlluminationFC},
+handled by adjusting random perturbations in $\bm{n}$ vector \\
+$l$ = number of light sources
+
+S and T intensities depend on previous light hits and hence, must be calculated 
+recursively.
+
+\subsection{Measuring Light}
 Our ray tracer however, should be able to handle the effect of 
 the wavelength of light in the ways it behaves after striking 
 a surface/object in the scene. Our 
 ray tracer will disregard the spectrums and 
 only deal with RGB. First, let's define some terms from radiometry.
+A rigorous discussion of the following theory is available in 
+Lafortune\cite{Lafortune1995MathematicalMA} and Wojciech Jarosz's Ph.D. 
+Dissertation\cite{jarosz08thesis} on the same topic also does an excellent job
+at making these ideas clear.
 
 \begin{definition}[Radiant Energy]
 Electromagnetic radiations carry energy through space.
@@ -415,6 +458,24 @@ $$
 	point on a surface, where the surface could be real or imaginary.
 \end{definition}
 
+\begin{center}
+\begin{figure}
+	\includegraphics[width=0.8\linewidth, scale=0.6]{raynormal.png}
+	\centering
+	\caption{Ray of Light Intersecting a surface}
+	\label{figure:rayandnormal}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+	\includegraphics[width=0.8\linewidth, scale=0.6]{incidentradiance.png}
+	\centering
+	\caption{Incident and Exitant Radiance}
+	\label{figure:incidentexitant}
+\end{figure}
+\end{center}
+
 \begin{definition}[Irradiance E]
 	The radiant flux arriving at a surface per unit area 
 	is called irradiance. 
@@ -430,14 +491,7 @@ $$
 		M =  \cfrac{d\Phi}{dA}
 	$$
 \end{definition}
-\begin{center}
-\begin{figure}
-	\includegraphics[width=0.8\linewidth, scale=0.6]{raynormal.png}
-	\centering
-	\caption{Ray of Light Intersecting a surface}
-	\label{figure:rayandnormal}
-\end{figure}
-\end{center}
+
 
 \begin{definition}[Radiance]
 	Imagine an elemental cone to represent a 
@@ -447,15 +501,111 @@ $$
 	is $dAcos\theta$. The radiance is the radiant flux 
 	density per unit elemental cone or per unit solid 
 	angle $d\omega$. 
-	$$
-		L = \cfrac{d^{2} \Phi}{dA cos\theta d\omega}
-	$$
+	\begin{equation}\label{eqn:radiance}
+		L = \cfrac{d^{2} \Phi}{dA cos\theta d\omega} = \cfrac{d^{2}\Phi(\bm{p}, \bm{\omega})}{(\bm{n}_{p}.\bm{\omega})d\bm{\omega}dA(\bm{p})}
+	\end{equation}
 \end{definition}
-In order to avoid the complexity of having to take limits to 
-deal with the radiance at above and below a surface, we define radiance 
-arriving at a point on a surface and the radiance leaving that point. 
 
-Consider a point p on the surface of an object. Let $L_{i}(\bm{p}, \bm{\omega})$
+We can also integrate equation \eqref{eqn:radiance} over the hemisphere of directions $\Omega$
+and area $dA$ to obtain 
+
+$$
+\Phi = \int_{A}\int_{\Omega}L(\bm{p}\to \bm{\omega})(\bm{n}_{p}.\bm{\omega})d\bm{\omega}dA(\bm{p})
+$$
+
+We can also compute the irradiance and radiant exitance 
+using :
+
+\begin{equation}\label{eqn:irradianceradiance}
+	E(\bm{p}) = \int_{\Omega}L(\bm{p}\leftarrow \bm{\omega})(\bm{n}_{p}.\bm{\omega})d\bm{\omega} 
+\end{equation}
+\begin{equation}
+	M(\bm{p}) = \int_{\Omega}L(\bm{p}\to \bm{\omega})(\bm{n}_{p}.\bm{\omega})d\bm{\omega} 
+\end{equation}
+
+Although in the case of surfaces in general, 
+$$
+L(\bm{p}\to \bm{\omega}) \neq L(\bm{p}\leftarrow \bm{\omega}) 
+$$
+
+In vacuum where photons can propagate unobstructed, all the radiance incident at a 
+point from a direction $\bm{\omega}$ will continue on in the form of 
+exitant radiance in the direction $-\bm{\omega}$. Because of this, we can form a simple 
+relation between exitant and incident radiance at a point. To accomplish, 
+we can come up with a ray casting function $\bm{r(\bm{p}, \bm{\omega})} = \bm{p}$'
+which returns $\bm{p}$', the point on the closest surface from $\bm{p}$ in the
+direction $\bm{\omega}$. Since radiance stays constant in vacuum along a 
+straight line, we can say that the incidence radiance at a point $\bm{p}$ from 
+direction $\bm{\omega}$ is equal to the outgoing radiance from the closest visible points 
+in that direction. That is 
+\begin{equation}\label{eqn:inputoutputinvariance}
+L(\bm{p}\leftarrow \bm{\omega}) = L(\bm{p}' \to -\bm{\omega})
+\end{equation}
+Although our ray tracer will not incorporate the effect of participating 
+medium on the rays, we will have to take the material properties into 
+account as even the most minimal of ray tracers ought to do.
+
+\subsection{Interaction of Light with Surfaces}
+\subsubsection{The Bidirectional Reflectance Distribution Function}
+If $\bm{\omega}_{i}$ be the incoming direction, and $\bm{\omega}_{0}$ be the outgoing direction, then 
+the BRDF($f_{r}$) gives a measure for the amount of radiance impinging at a point $\bm{p}$ along 
+a direction $\bm{\omega}_{i}$ that is reflected along $\bm{\omega}_{0}$. Formally, 
+\begin{equation}\label{eqn:brdf}
+	f_{r}(\bm{\omega}_{i}, \bm{p}, \bm{\omega}_{o}) = \cfrac{dL_{o}(\bm{p}, \bm{\omega}_{o})}{dE(\bm{p},\bm{\omega}_{i})}
+	= \cfrac{dL_{o}(\bm{p}, \bm{\omega}_{o})}{L_{i}(\bm{p}, \bm{\omega}_{i})(\bm{n}_{p}.\bm{\omega}_{i})d\bm{\omega}_{i}}
+\end{equation}
+The last step is obtained from \eqref{eqn:irradianceradiance}.
+
+The information in the BRDF can be used to derive the relationship between incident and reflected 
+radiance. By manipulating and then integrating \eqref{eqn:brdf} over all directions, we can derive 
+an expression for computing the reflected radiance at a point $\bm{p}$. We also note that 
+the total radiance leaving a surface is the sum of the emitted radiance and the reflected radiance and 
+also from \eqref{eqn:brdf} we get:
+$$
+L_{o}(\bm{p}, \bm{\omega}_{o}) = L_{e}(\bm{p}, \bm{\omega}_{o}) + \int_{\Omega_{i}}L_{i}(\bm{p}, \bm{\omega}_{i})
+f_{r}(\bm{\omega}_{i}, \bm{p}, \bm{\omega}_{o})|\bm{\omega}_{i}.\bm{n}_{p}|d\bm{\omega}_{i}
+$$
+
+Since each incidence radiance corresponds to an outgoing 
+radiance, as expressed in equation \eqref{eqn:inputoutputinvariance}, 
+and also if $\bm{r}(\bm{p}, \bm{\omega})$ be the ray casting function then the 
+gloabal illumination model of the famous rendering equation as 
+described by James Kajiya in his paper 'The Rendering Equation'\cite{kajiya}
+in hemispheric form: 
+
+\begin{equation}\label{eqn:renderingequation}
+L_{o}(\bm{p}, \bm{\omega}_{o}) = L_{e}(\bm{p}, \bm{\omega}_{o}) + \int_{\Omega_{i}}L_{o}(\bm{r}(\bm{p}, -\bm{\omega_{i}}), \bm{\omega}_{i})
+f_{r}(\bm{\omega}_{i}, \bm{p}, \bm{\omega}_{o})|\bm{\omega}_{i}.\bm{n}_{p}|d\bm{\omega}_{i}
+\end{equation}
+
+Kajiya suggested we follow a Monte Carlo approach 
+to computing the equation \eqref{eqn:renderingequation} 
+in a method that is now commonly called Path Tracing.
+
+Although several top notch BRDFs exist (notably 
+the Cook-Torrance model\cite{cooktorrance}), 
+we will be using the Phong distribution: 
+$$
+f_{r}(\bm{\omega}_{i}, \bm{p}, \bm{\omega}_{o}) = k_{d}\cfrac{1}{\pi}+k_{s}\cfrac{n+2}{2\pi}\text{cos}^{n}\alpha
+$$
+
+where $\alpha$ = angle between the reflected ray and ideal specular reflection and 
+n is the specular exponent. For preservation of energy, the restriction that $k_{s}+k_{d}\leq 1$
+is essential.
+
+\subsection{Monte Carlo Estimator}
+
+
+
+\section{Implementation Methods Sample Codes}
+
+
+\section{Existing Systems}
+
+\section{System Block Diagram}
+
+\section{Project Schedule}
+
 
 
 \newpage

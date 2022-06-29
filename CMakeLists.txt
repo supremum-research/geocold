@@ -120,12 +120,14 @@ set (GEOCOLD_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererapplication.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/pointveccommon.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/normal.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/objloader.hpp
 
 	#${CMAKE_CURRENT_SOURCE_DIR}/include/rendererwindow.hpp
 )
 
 set (GEOCOLD_SOURCES 
 	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererapplication.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/objloader.cpp
 	#	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererwindow.cpp
 	)
 

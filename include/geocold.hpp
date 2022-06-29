@@ -7,9 +7,10 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 //#include "rendererwindow.hpp"
+// #include "define.hpp"
 #include "rendererapplication.hpp"
 #include "pointveccommon.hpp"
-// #include "define.hpp"
+#include "objloader.hpp"
 
 
 #endif
