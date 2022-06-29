@@ -3,7 +3,7 @@
 
 
 
-namespace renderer {
+namespace geocold {
 
 
   void RenderApplication::initialize_window() {
@@ -72,4 +72,4 @@ namespace renderer {
 
 
 
-}  //namespace renderer
+}  //namespace geocold 

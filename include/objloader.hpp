@@ -10,9 +10,7 @@ class ObjLoader {
 
 
   private:
-
-
-
+    
 };
 
 

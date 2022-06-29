@@ -10,7 +10,7 @@
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
-namespace renderer {
+namespace geocold {
 
 	class RenderApplication {
 
@@ -38,7 +38,7 @@ namespace renderer {
 	};
 
 
-} //namespace renderer 
+} //namespace geocold 
 
 
 
