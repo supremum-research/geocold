@@ -2,6 +2,9 @@
 #include "rendererapplication.hpp"
 
 
+#include <vector>
+#include <map>
+
 
 namespace geocold {
 
@@ -78,9 +81,40 @@ namespace geocold {
       throw std::runtime_error("Failed to find any GPUs with vulkan support.");
     }
 
+    std::vector<VkPhysicalDevice> devices(devcount);
+    vkEnumeratePhysicalDevices(instance, &devcount, devices.data());
+    
+    for (const auto& device : devices) {
+      if (isdevicesuitable(device)) {
+        pdev = device;
+        break;
+      }
 
+      if (pdev == VK_NULL_HANDLE) {
+        throw std::runtime_error("Failed to find a suitable GPU!");
+      }
+    }
 
+    std::multimap<int, VkPhysicalDevice> candidates;
+    for (const auto& device : devices) {
+      int score = rateDeviceSuitability(device);
+      candidates.insert(std::make_pair(score,device));
+    }
   }
+
+  bool RenderApplication::isdevicesuitable(VkPhysicalDevice device) {
+    VkPhysicalDeviceProperties devprop;
+    vkGetPhysicalDeviceProperties(device, &devprop);
+    VkPhysicalDeviceFeatures devfeatures;
+    vkGetPhysicalDeviceFeatures(device, &devfeatures);
+    return devprop.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU
+                              && devfeatures.geometryShader;   
+  }
+
+  int RenderApplication::ratedevicesuitability(VkPhysicalDevice device) {
+    
+  }
+
 
 
 

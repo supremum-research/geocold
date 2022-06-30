@@ -31,10 +31,13 @@ namespace geocold {
 
 			void pickPhysicalDevice();
 
+			bool isdevicesuitable(VkPhysicalDevice device);
+			int ratedevicesuitability(VkPhysicalDevice device);
+
 		private: //fields
 			GLFWwindow* window;
 			VkInstance instance;
-			VkPhysicalDevice pdev{ VK_NULL_HANDLE };
+			VkPhysicalDevice pdev{VK_NULL_HANDLE} ;
 			uint32_t width { WIDTH };
 			uint32_t height { HEIGHT };
 

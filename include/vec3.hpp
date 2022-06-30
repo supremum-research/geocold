@@ -20,8 +20,7 @@ class Normal3;
 /// 4. /= with a scalar no. => every element of the vector /= with the scalar
 /// 5. addition betn vectors 'u' and 'v' => implements element wise addition => returns a vector
 /// 6. difference of 'v' from 'u' => v - u => element wise subtraction => returns a vector
-/// 7. inner_product of two vectors => element wise product and a then sum => returns a scalar
-/// 8. norm => gives the l2 norm of the vector => is a scalar no.
+/// 7. inner_product of two vectors => element wise product and a then sum => returns a scalar 8. norm => gives the l2 norm of the vector => is a scalar no.
 /// 9. squared_l2_norm => gives the square of the norm() of the vector.
 /// 10. += and -= operations between vectors used to implement + and - between vectors
 /// 11. Vec3 also supports multiplication with scalar on the left and on the right
@@ -55,7 +54,9 @@ public:
     :m_x{point.x()}, 
      m_y{point.y()},
      m_z{point.z()} 
-  {}
+  {
+    assert(!hasNaNs());
+  }
 
   [[nodiscard]] constexpr T x() const noexcept { return m_x; }
 
@@ -145,6 +146,10 @@ public:
 
   [[nodiscard]] constexpr Vec3<T> abs() {
     return Vec3<T>(std::abs(this->x()), std::abs(this->y()), std::abs(this->z()));
+  }
+
+  [[nodiscard]] constexpr bool hasNaNs() const noexcept {
+    return std::isnan(m_x)|| std::isnan(m_y) || std::isnan(m_z);
   }
 
 
