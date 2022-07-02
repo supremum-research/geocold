@@ -3,7 +3,8 @@
 
 #include <array>
 #include <cassert>
-#include "vec3.hpp"
+//#include "vec3.hpp"
+#include "common.hpp"
 
 namespace geocold {
 
@@ -64,6 +65,14 @@ class Point3 {
 
   [[nodiscard]] constexpr Vec3<T> operator-(const Point3<T>& rhs) const noexcept {
     return Vec3<T>(this->x_ - rhs.x(), this->y_ - rhs.y(), this->z_ - rhs.z());
+  }
+
+  [[nodiscard]] constexpr Point3<T> divide(const Point3<T>& point) const noexcept {
+    return Point3<T>{
+      this->x_ / point.x(),
+      this->y_ / point.y(),
+      this->z_ / point.z()
+    };
   }
 
   [[nodiscard]] constexpr T squared_distancefromorigin() const noexcept { return x_ * x_ + y_ * y_ + z_ * z_; }

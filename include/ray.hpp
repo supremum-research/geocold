@@ -1,6 +1,11 @@
 #ifndef GEOCOLD_INCLUDE_PRIMITIVES_RAY_HPP 
 #define GEOCOLD_INCLUDE_PRIMITIVES_RAY_HPP 
 
+
+
+#include <limits>
+
+
 #include "point.hpp"
 #include "vec3.hpp"
 
@@ -30,14 +35,17 @@ private:
 public:
   Ray() = default;
 
-  Ray(const Point3<T>& origin_,
-      const Vec3<T>& direction_,
+  Ray(const Point3<T>& origin,
+      const Vec3<T>& direction,
       T tmin_ = T(0),
-      T tmax_ = std::numeric_limits<T>::max) 
-    :origin_{origin_}
-    ,direction_{direction_}
+      T tmax_ = std::numeric_limits<T>::max
+      ) 
+
+    :origin_{origin}
+    ,direction_{direction}
     ,tmin{tmin_}
     ,tmax{tmax_}
+
     {}
 
   Point3<T> origin() const {

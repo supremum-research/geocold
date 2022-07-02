@@ -32,6 +32,7 @@ namespace geocold {
 			void pickPhysicalDevice();
 
 			bool isdevicesuitable(VkPhysicalDevice device);
+
 			int ratedevicesuitability(VkPhysicalDevice device);
 
 		private: //fields

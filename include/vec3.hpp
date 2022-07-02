@@ -3,15 +3,11 @@
 #define GEOCOLD_INCLUDE_PRIMITIVES_VEC3_HPP 
 
 #include <cmath>
+#include <algorithm>
 #include <iostream>
 #include <cassert>
+#include "common.hpp"
 
-
-template <typename T>
-class Point3;
-
-template <typename T>
-class Normal3;
 
 /// A vector has the following operations defined on it. 
 /// 1. multiplication with a negative scalar no. => all coordinates are made negative
@@ -24,7 +20,9 @@ class Normal3;
 /// 9. squared_l2_norm => gives the square of the norm() of the vector.
 /// 10. += and -= operations between vectors used to implement + and - between vectors
 /// 11. Vec3 also supports multiplication with scalar on the left and on the right
-/// the one on the left is in file pointveccommon.hpp
+/// the one on the left is in file common.hpp
+
+namespace geocold {
 template <typename T>
 class Vec3 {
 //members
@@ -171,5 +169,6 @@ using Vec3f0 = Vec3<float>;
 using Vec3f = Vec3<double>;
 using Vec3i = Vec3<int>;
 
+} //namespace geocold
 
 #endif

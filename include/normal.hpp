@@ -2,11 +2,14 @@
 #define GEOCOLD_INCLUDE_PRIMITIVES_NORMAL_HPP 
 
 #include <cassert>
-#include "vec3.hpp"
+//#include "vec3.hpp"
+#include "common.hpp"
 
 
 //A good ray tracer should separate the difference between a normal, a vector,
 //a point and a ray.
+namespace geocold {
+
 template <typename T>
 class Normal3 {
   private: 
@@ -94,7 +97,7 @@ using Normal3f0 = Normal3<float>;
 using Normal3f  = Normal3<double>;
 using Normal3i = Normal3<int>;
 
-
+} //namespace geocold
 
 
 #endif
