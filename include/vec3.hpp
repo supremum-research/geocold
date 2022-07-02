@@ -118,7 +118,7 @@ public:
     return temp;
   }
 
-  [[nodiscard]] constexpr T& inner_product(Vec3<T>& vec) const noexcept {
+  [[nodiscard]] constexpr T& dot(Vec3<T>& vec) const noexcept {
     return this->m_x * vec.x() + this->m_y * vec.y() + this->m_z * vec.z();
   }
   

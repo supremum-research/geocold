@@ -4,6 +4,7 @@
 
 #include "point.hpp"
 #include "vec3.hpp"
+#include "normal.hpp"
 
 namespace geocold {
 
@@ -65,6 +66,22 @@ Vec3<T> CoordinateSystem(const Vec3<T>& v1, Vec3<T>* v2, Vec3<T>* v3) {
 
   *v3 = CrossProduct(v1, *v2);
 }
+
+template <typename T>
+T dot(const Normal3<T>& normal, const Vec3<T>& vec) {
+  Vec3<T> left {normal};
+  return left.dot(vec);
+}
+
+template <typename T>
+T dot(const Vec3<T>& vec, const Normal3<T>& normal) {
+  return dot(normal, vec);
+}
+
+
+
+
+
 
 
 } //namespace geocold

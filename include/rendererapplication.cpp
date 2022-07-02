@@ -8,8 +8,7 @@
 
 namespace geocold {
 
-
-  void RenderApplication::initialize_window() {
+void RenderApplication::initialize_window() {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -97,7 +96,7 @@ namespace geocold {
 
     std::multimap<int, VkPhysicalDevice> candidates;
     for (const auto& device : devices) {
-      int score = rateDeviceSuitability(device);
+      int score = ratedevicesuitability(device);
       candidates.insert(std::make_pair(score,device));
     }
   }

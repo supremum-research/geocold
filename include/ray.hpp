@@ -18,8 +18,8 @@ namespace geocold {
 template <typename T>
 class Ray {
 private:
-  Point3<T> origin;
-  Vec3<T> direction;
+  Point3<T> origin_;
+  Vec3<T> direction_;
   T tmin; // based on directX ray tracer
   T tmax;
 
@@ -30,18 +30,26 @@ private:
 public:
   Ray() = default;
 
-  Ray(const Vec3<T>& origin_,
+  Ray(const Point3<T>& origin_,
       const Vec3<T>& direction_,
       T tmin_ = T(0),
       T tmax_ = std::numeric_limits<T>::max) 
-    :origin{origin_}
-    ,direction{direction_}
+    :origin_{origin_}
+    ,direction_{direction_}
     ,tmin{tmin_}
     ,tmax{tmax_}
     {}
 
-  Point3<T> operator()(T param) {
-    return (origin + param * direction);
+  Point3<T> origin() const {
+    return origin_;
+  }
+
+  Vec3<T> direction() const {
+    return direction_;
+  }
+
+  Point3<T> operator()(T param) const {
+    return (origin_ + param * direction_);
   }
 
 };
