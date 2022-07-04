@@ -6,8 +6,9 @@
 #include <limits>
 
 
-#include "point.hpp"
 #include "vec3.hpp"
+#include "point.hpp"
+#include "common.hpp"
 
 namespace geocold {
 
@@ -20,43 +21,29 @@ namespace geocold {
  * p(t) = e + t(s-e)
  * */
 
-template <typename T>
-class Ray {
-private:
-  Point3<T> origin_;
-  Vec3<T> direction_;
-  T tmin; // based on directX ray tracer
-  T tmax;
+struct Ray {
+  Point3f0 origin_;
+  Vec3f0 direction_;
 
-  
 
-   
-
-public:
   Ray() = default;
 
-  Ray(const Point3<T>& origin,
-      const Vec3<T>& direction,
-      T tmin_ = T(0),
-      T tmax_ = std::numeric_limits<T>::max
+  Ray(const Point3f0& origin,
+      const Vec3f0& direction
       ) 
-
     :origin_{origin}
     ,direction_{direction}
-    ,tmin{tmin_}
-    ,tmax{tmax_}
-
     {}
 
-  Point3<T> origin() const {
+  [[nodiscard]] Point3f0 origin() const {
     return origin_;
   }
 
-  Vec3<T> direction() const {
+  [[nodiscard]] Vec3f0 direction() const {
     return direction_;
   }
 
-  Point3<T> operator()(T param) const {
+  Point3f0 operator()(float param) const {
     return (origin_ + param * direction_);
   }
 

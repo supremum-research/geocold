@@ -1,4 +1,3 @@
-
 #ifndef GEOCOLD_INCLUDE_BOUNDING_BOXES_HPP 
 #define GEOCOLD_INCLUDE_BOUNDING_BOXES_HPP 
 
@@ -31,7 +30,8 @@ struct BoundingBox3D {
         pmin_ = Point3<T>(max_num, max_num, max_num);
         pmin_ = Point3<T>(min_num, min_num, min_num);
     }
-explicit BoundingBox3D(const Point3<T>& point)  
+
+    explicit BoundingBox3D(const Point3<T>& point)  
         :pmin_{point}
         ,pmax_{point}
     {}
@@ -50,21 +50,6 @@ explicit BoundingBox3D(const Point3<T>& point)
     }
 
     BoundingBox3D<T> box_union(const BoundingBox3D<T>& box) const {
-        return BoundingBox3D<T>{
-            Point3<T>{ 
-                std::min((*this).pmin_.x(), box.pmin_.x()),
-                std::min((*this).pmin_.y(), box.pmin_.y()),
-                std::min((*this).pmin_.z(), box.pmin_.z())
-            },
-            Point3<T>{
-                std::max((*this).pmax_.x(), box.pmax_.x()),
-                std::max((*this).pmax_.y(), box.pmax_.y()),
-                std::max((*this).pmax_.z(), box.pmax_.z())
-            }
-        };
-    }
-    ///get a box that spans the passed point by expanding
-    BoundingBox3D<T> point_union(const Point3<T>& box) const {
         return BoundingBox3D<T>{
             Point3<T>{ 
                 std::min((*this).pmin_.x(), box.pmin_.x()),
@@ -120,11 +105,13 @@ explicit BoundingBox3D(const Point3<T>& point)
         };
     }
 
+  
+
 }; //class BoundingBox3D
 
-using BoudingBox3Df = BoundingBox3D<double>;
-using BoudingBox3Df0 = BoundingBox3D<float>;
-using BoudingBox3Di = BoundingBox3D<int>;
+using BoundingBox3Df = BoundingBox3D<double>;
+using BoundingBox3Df0 = BoundingBox3D<float>;
+using BoundingBox3Di = BoundingBox3D<int>;
 
 
 

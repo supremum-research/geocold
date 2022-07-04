@@ -3,8 +3,9 @@
 
 #include <array>
 #include <cassert>
+#include <cmath>
 //#include "vec3.hpp"
-#include "common.hpp"
+#include "definitions.hpp"
 
 namespace geocold {
 
@@ -48,14 +49,14 @@ class Point3 {
 
   [[nodiscard]] constexpr T& z() noexcept{ return z_; }
 
-  [[nodiscard]] constexpr T operator[](index_type idx) const { 
+  [[nodiscard]] constexpr T operator[](int idx) const { 
     assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
     return idx == 0 ?  x_
                     : idx == 1 ? y_
                     : z_;
   }
 
-  [[nodiscard]] constexpr T& operator[](index_type idx) { 
+  [[nodiscard]] constexpr T& operator[](int idx) { 
     assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
     return idx == 0 ?  x_
                     : idx == 1 ? y_
@@ -81,16 +82,11 @@ class Point3 {
 
 };
 
-
-
 /* -------- typedefs for Point3                             -------- */
 using Point3f0 = Point3<float>;
 using Point3f = Point3<double>;
 using Point3i = Point3<int>;
 /* --------                              -------- */
-
-
-
 
 } //namespace geocold
 

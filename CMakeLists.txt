@@ -111,17 +111,21 @@ endif()
 # setting the headers and sources of our library
 
 set (GEOCOLD_HEADERS
+	${CMAKE_CURRENT_SOURCE_DIR}/include/bounding_boxes.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/common.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/definitions.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/geocold.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/light.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/line.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/include/point.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/include/ray.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/include/vec3.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/include/geocold.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/include/define.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererapplication.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/include/common.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/localdiffgeo.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/normal.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/objloader.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/point.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/ray.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererapplication.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/shape.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/transform.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/vec3.hpp
 
 	#${CMAKE_CURRENT_SOURCE_DIR}/include/rendererwindow.hpp
 )

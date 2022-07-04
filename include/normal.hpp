@@ -2,6 +2,7 @@
 #define GEOCOLD_INCLUDE_PRIMITIVES_NORMAL_HPP 
 
 #include <cassert>
+#include <cmath>
 //#include "vec3.hpp"
 #include "common.hpp"
 
@@ -22,6 +23,8 @@ class Normal3 {
     using index_type = std::size_t; 
     using element_type = T;
     using size_type = std::size_t;
+
+    Normal3() :x_{T(0)}, y_{T(0)}, z_{T(0)} {} 
     
     constexpr explicit Normal3(const Vec3<T>& vec) noexcept : x_{vec.x()}, y_{vec.y()}, z_{vec.z()} {
       assert(!vec.hasNaNs());
@@ -88,6 +91,15 @@ class Normal3 {
       Vec3<T> temp = Vec3(this->x(), this->y(), this->z());
       temp -= vec;
       return temp;
+    }
+
+    [[nodiscard]] constexpr Normal3<T> normalize() const {
+      auto norm = std::sqrt(this->x_*this->x_ + this->y_ * this->y_ + this->z_ * this->z_);
+      return Normal3<T>{
+        this->x_ / norm,
+        this->y_ / norm,
+        this->z_ / norm
+      };
     }
 
 

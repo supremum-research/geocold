@@ -6,8 +6,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cassert>
-#include "common.hpp"
-
+#include "definitions.hpp"
 
 /// A vector has the following operations defined on it. 
 /// 1. multiplication with a negative scalar no. => all coordinates are made negative
@@ -23,6 +22,7 @@
 /// the one on the left is in file common.hpp
 
 namespace geocold {
+
 template <typename T>
 class Vec3 {
 //members
@@ -64,14 +64,14 @@ public:
 
   [[nodiscard]] constexpr Vec3 operator-() const noexcept { return Vec3(-m_x, -m_y, -m_z); }
 
-  [[nodiscard]] constexpr T operator[](index_type idx) const { 
+  [[nodiscard]] constexpr T operator[](int idx) const { 
     assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
     return idx == 0 ?  m_x 
                     : idx == 1 ? m_y
                     : m_z;
   }
 
-  [[nodiscard]] constexpr T& operator[](index_type idx) { 
+  [[nodiscard]] constexpr T& operator[](int idx) { 
     assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
     return idx == 0 ?  m_x 
                     : idx == 1 ? m_y
@@ -140,6 +140,7 @@ public:
   [[nodiscard]] constexpr Vec3<T> operator/(T scalar) {
     auto temp = Vec3<T>(this->m_x, this->m_y, this->m_z);
     temp *= static_cast<element_type>(1)/scalar;
+    return temp;
   }
 
   [[nodiscard]] constexpr Vec3<T> abs() {
@@ -163,11 +164,12 @@ public:
 };
 
 
-
-
+/* -------- typedefs for Vec3                             -------- */
 using Vec3f0 = Vec3<float>;
 using Vec3f = Vec3<double>;
 using Vec3i = Vec3<int>;
+/* -------- typedefs for Vec3                             -------- */
+
 
 } //namespace geocold
 

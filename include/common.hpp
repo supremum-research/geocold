@@ -2,10 +2,14 @@
 #define GEOCOLD_INCLUDE_POINT_VEC_COMMON_HPP
 
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <algorithm>
 #include <optional>
 #include <tuple>
+
+#include "definitions.hpp"
+
 
 //#include "bounding_boxes.hpp"
 //#include "point.hpp" 
@@ -14,19 +18,6 @@
 
 
 namespace geocold {
-
-template <typename T>
-class Point3;
-
-template <typename T>
-struct BoundingBox3D;
-
-template <typename T>
-class Vec3;
-
-template <typename T>
-  class Normal3;
-
 template <typename T>
 Point3<T> operator+(const Point3<T>& point, const Vec3<T>& vec) noexcept {
   return Point3<T>(point.x() + vec.x(), point.y() + vec.y(), point.z() + vec.z());
@@ -38,12 +29,12 @@ Point3<T> operator-(const Point3<T>& point, const Vec3<T>& vec) noexcept {
 }
 
 template <typename T>
-Vec3<T> operator*(T scalar, const Vec3<T>& vec) {
+Vec3<T> operator*(T scalar, Vec3<T> vec) {
   return vec * scalar;
 }
 
 template <typename T>
-Vec3<T> normalize(const Vec3<T>& vec) {
+Vec3<T> normalize(Vec3<T> vec) {
   return vec / vec.norm();
 } 
 
@@ -97,6 +88,23 @@ T dot(const Normal3<T>& normal, const Vec3<T>& vec) {
 template <typename T>
 T dot(const Vec3<T>& vec, const Normal3<T>& normal) {
   return dot(normal, vec);
+}
+
+///get a box that spans the passed point by expanding
+template <typename T>
+inline BoundingBox3D<T> point_union(const BoundingBox3D<T>& box, const Point3<T>& point) {
+  return BoundingBox3D<T>{
+      Point3<T>{ 
+        std::min(box.pmin_.x(), point.x()),
+        std::min(box.pmin_.y(), point.y()),
+        std::min(box.pmin_.z(), point.z())
+      },
+      Point3<T>{
+          std::max(box.pmax_.x(), point.x()), 
+          std::max(box.pmax_.y(), point.y()), 
+          std::max(box.pmax_.z(), point.z()) 
+      }
+  };
 }
 
 template <typename T>
@@ -177,6 +185,22 @@ std::optional<std::tuple<float, float>> solve_quadratic(float a, float b, float 
     auto root2 = 0.5f * (-discr - b);
     return std::optional(std::make_tuple(root1, root2));
   }
+}
+  
+
+
+
+
+// /* -------- typedefs for Vec3                             -------- */
+// using Vec3f0 = Vec3<float>;
+// using Vec3f = Vec3<double>;
+// using Vec3i = Vec3<int>;
+// /* -------- typedefs for Vec3                             -------- */
+//
+//
+
+inline float to_radians(float degree) {
+  return M_PI / 180.0 * degree;
 }
 
 
