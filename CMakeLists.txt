@@ -133,6 +133,7 @@ set (GEOCOLD_HEADERS
 set (GEOCOLD_SOURCES 
 	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererapplication.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/objloader.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/include/shape.cpp
 	#	${CMAKE_CURRENT_SOURCE_DIR}/include/rendererwindow.cpp
 	)
 

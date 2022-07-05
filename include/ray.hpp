@@ -24,15 +24,24 @@ namespace geocold {
 struct Ray {
   Point3f0 origin_;
   Vec3f0 direction_;
+  float tmin;
+  float tmax;
+  std::size_t depth;
+  float time;
 
 
   Ray() = default;
 
   Ray(const Point3f0& origin,
-      const Vec3f0& direction
+      const Vec3f0& direction,
+      float time_
       ) 
     :origin_{origin}
     ,direction_{direction}
+    ,tmin{0}
+    ,tmax{std::numeric_limits<float>::max()}
+    ,depth{0}
+    ,time{time_}
     {}
 
   [[nodiscard]] Point3f0 origin() const {

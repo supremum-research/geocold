@@ -42,14 +42,14 @@ class Normal3 {
     [[nodiscard]] constexpr Normal3 operator-() const noexcept { return Normal3(-x_, -y_, -z_); }
 
     [[nodiscard]] constexpr T operator[](index_type idx) const { 
-      assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
+      assert(idx < static_cast<int>(3) && idx >= static_cast<int>(0));
       return idx == 0 ?  x_ 
                       : idx == 1 ? y_
                       : z_;
     }
 
     [[nodiscard]] constexpr T& operator[](index_type idx) { 
-      assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
+      assert(idx < static_cast<int>(3) && idx >= static_cast<int>(0));
       return idx == 0 ?  x_ 
                       : idx == 1 ? y_
                       : z_;

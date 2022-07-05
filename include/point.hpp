@@ -50,21 +50,19 @@ class Point3 {
   [[nodiscard]] constexpr T& z() noexcept{ return z_; }
 
   [[nodiscard]] constexpr T operator[](int idx) const { 
-    assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
+    assert(idx < static_cast<int>(3) && idx >= static_cast<int>(0));
     return idx == 0 ?  x_
                     : idx == 1 ? y_
                     : z_;
   }
 
   [[nodiscard]] constexpr T& operator[](int idx) { 
-    assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
+    assert(idx < static_cast<int>(3) && idx >= static_cast<int>(0));
     return idx == 0 ?  x_
                     : idx == 1 ? y_
                     : z_;
   }
-
-
-  [[nodiscard]] constexpr Vec3<T> operator-(const Point3<T>& rhs) const noexcept {
+[[nodiscard]] constexpr Vec3<T> operator-(const Point3<T>& rhs) const noexcept {
     return Vec3<T>(this->x_ - rhs.x(), this->y_ - rhs.y(), this->z_ - rhs.z());
   }
 

@@ -65,14 +65,14 @@ public:
   [[nodiscard]] constexpr Vec3 operator-() const noexcept { return Vec3(-m_x, -m_y, -m_z); }
 
   [[nodiscard]] constexpr T operator[](int idx) const { 
-    assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
+    assert(idx < static_cast<int>(3) && idx >= static_cast<int>(0));
     return idx == 0 ?  m_x 
                     : idx == 1 ? m_y
                     : m_z;
   }
 
   [[nodiscard]] constexpr T& operator[](int idx) { 
-    assert(idx < static_cast<std::size_t>(3) && idx >= static_cast<std::size_t>(0));
+    assert(idx < static_cast<int>(3) && idx >= static_cast<int>(0));
     return idx == 0 ?  m_x 
                     : idx == 1 ? m_y
                     : m_z;

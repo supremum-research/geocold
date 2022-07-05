@@ -22,6 +22,8 @@ struct Ray;
 
 struct Shape;
 
+struct LocalDiffGeo;
+
 
 } //namespace geocold
 

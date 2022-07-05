@@ -5,6 +5,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <algorithm>
+#include <limits>
 #include <optional>
 #include <tuple>
 
@@ -203,6 +204,10 @@ inline float to_radians(float degree) {
   return M_PI / 180.0 * degree;
 }
 
+inline float gamma(int n) {
+  auto machine_eps = std::numeric_limits<float>::epsilon();
+  return (n * machine_eps) / (1 - n * machine_eps);
+}
 
 
 

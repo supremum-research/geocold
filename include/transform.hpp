@@ -176,7 +176,7 @@ struct Transform {
     auto normu = normalize(u);
 
     glm::mat4 camtoworld(1.0F); 
-    
+   
     for (int i = 0; i < 3; ++i) {
       camtoworld[i][0] = -normleft[i];
       camtoworld[i][1] = normu[i];
@@ -229,9 +229,10 @@ struct Transform {
   }
 
   Ray operator()(const Ray &ray) const {
-    Point3f0 origin = (*this)(ray.origin_);//apply transformation to point
-    Vec3f0 dirn = (*this)(ray.direction_); //apply transformation to vector
-    return Ray{origin, dirn};
+    auto res = ray;
+    res.origin_ = (*this)(ray.origin_);//apply transformation to point
+    res.direction_ = (*this)(ray.direction_); //apply transformation to vector
+    return res;
   }
   
   //composing transformations

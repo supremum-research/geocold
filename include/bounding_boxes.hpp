@@ -1,9 +1,11 @@
 #ifndef GEOCOLD_INCLUDE_BOUNDING_BOXES_HPP 
 #define GEOCOLD_INCLUDE_BOUNDING_BOXES_HPP 
 
-#include <algorithm>
 #include <limits>
 #include <cmath>
+#include <algorithm>
+
+#include "ray.hpp"
 #include "common.hpp"
 
 
@@ -14,6 +16,22 @@ enum class Axis {
   Y,
   Z
 };
+
+struct HitInterval {
+  float hit0;
+  float hit1;
+
+  HitInterval() = default;
+
+  HitInterval(float hitfirst, float hitsecond)
+    :hit0{hitfirst}
+    ,hit1{hitsecond}
+    {}
+
+  HitInterval(const HitInterval& right) = default;
+
+};
+  
 
 /// Defines an Axis Aligned Bounding Box with 
 /// optimized intrsection test. 
@@ -104,6 +122,82 @@ struct BoundingBox3D {
             linearinterpolate(t.z(), pmin_.z(), pmax_.z())
         };
     }
+
+
+    [[nodiscard]] bool intersect_ray(Ray& ray, HitInterval* interv) const {
+      float t0 = 0;
+      float t1 = ray.tmax;
+      
+      for (int i = 0; i < 3; ++i) {
+        float invraydir = 1 / ray.direction_[i];
+        float tnear =  (this->pmin_[i] - ray.origin_[i]) * invraydir;
+        float tfar = (this->pmax_[i] - ray.origin_[i]) * invraydir;
+
+        if (tnear > tfar) {
+          std::swap(tnear, tfar);
+        }
+
+        tfar *= 1 + 2 * gamma(3); //i have no clue what this is 
+        t0 = tnear > t0 ? tnear : t0;
+        t1 = tfar < t1 ? tfar : t1;
+        if (t0 > t1) {
+          return false;
+        }
+      }
+
+      interv->hit0 = t0; 
+      interv->hit1 = t1;
+      return true;
+    }
+
+    //This method takes in addition a 
+    //vector carrying the inverses of the 
+    //ray's direction (to be supplied by precomputing).
+    //Also takes data about whether each direction 
+    //component is negative
+    //this means we can remove comparison
+    //between tnear and tfar in earlier method.
+    //
+    //I definitely didn't write this on my own 
+    [[nodiscard]] bool rapidintersect(Ray ray, const Vec3f0 invdir, const int dirisneg[3]) const {
+      const BoundingBox3D bounds = *this;
+      float tmin = (bounds[dirisneg[0]].x() - ray.origin_.x()) * invdir.x();
+      float tmax = (bounds[1 - dirisneg[0]].x() - ray.origin_.x()) * invdir.x();
+      float tymin = (bounds[dirisneg[1]].y() - ray.origin_.y()) * invdir.y();
+      float tymax = (bounds[1 - dirisneg[1]].y() - ray.origin_.y()) * invdir.y();
+
+      // Update _tMax_ and _tyMax_ to ensure robust bounds intersection
+      tmax *= 1 + 2 * gamma(3);
+      tymax *= 1 + 2 * gamma(3);
+      if (tmin > tymax || tymin > tmax) { 
+        return false;
+      }
+      if (tymin > tmin) {
+        tmin = tymin;
+      }
+      if (tymax < tmax) {
+        tmax = tymax;
+      }
+
+      // Check for ray intersection against $z$ slab
+      float tzmin = (bounds[dirisneg[2]].z() - ray.origin_.z()) * invdir.z();
+      float tzmax = (bounds[1 - dirisneg[2]].z() - ray.origin_.z()) * invdir.z();
+
+      // Update _tzMax_ to ensure robust bounds intersection
+      tzmax *= 1 + 2 * gamma(3);
+      if (tmin > tzmax || tzmin > tmax) {
+        return false;
+      }
+      if (tzmin > tmin) {
+        tmin = tzmin;
+      }
+      if (tzmax < tmax) {
+        tmax = tzmax;
+      } 
+      return (tmin < ray.tmax) && (tmax > 0);
+  }
+
+
 
   
 

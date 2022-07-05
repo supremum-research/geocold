@@ -6,7 +6,7 @@
 
 
 #include "common.hpp"
-#include "shape.hpp"
+//#include "shape.hpp"
 #include "point.hpp"
 #include "vec3.hpp"
 #include "normal.hpp"
@@ -26,8 +26,6 @@ struct LocalDiffGeo {
   Vec3f0 dpdu; //3*32
   Vec3f0 dpdv; //3*32
   std::shared_ptr<Shape> shape; //64
- 
-  LocalDiffGeo() = default;
 
   LocalDiffGeo(
       Point3f0 p_,
@@ -47,7 +45,7 @@ struct LocalDiffGeo {
     ,time{time_}
     ,dpdu{dpdu_}
     ,dpdv{dpdv_}
-    ,shape{shape_}
+    ,shape{std::move(shape_)}
   {}
 
   LocalDiffGeo(
@@ -72,8 +70,6 @@ struct LocalDiffGeo {
     ,shape{std::move(shape_)}
   {}
 
-
-  
 };
 
 
