@@ -1,4 +1,3 @@
-
 #ifndef GEOCOLD_INCLUDE_PRIMITIVES_VEC3_HPP 
 #define GEOCOLD_INCLUDE_PRIMITIVES_VEC3_HPP 
 
@@ -6,7 +5,9 @@
 #include <algorithm>
 #include <iostream>
 #include <cassert>
+
 #include "definitions.hpp"
+#include "normal.hpp"
 
 /// A vector has the following operations defined on it. 
 /// 1. multiplication with a negative scalar no. => all coordinates are made negative
@@ -23,152 +24,77 @@
 
 namespace geocold {
 
-template <typename T>
-class Vec3 {
+struct Vec3 {
 //members
-private:
 
-  T m_x;
-  T m_y;
-  T m_z;
+  float x_;
+  float y_;
+  float z_;
 
-public:
-  using index_type = std::size_t; 
-  using element_type = T;
-  using size_type = std::size_t;
 //methods
-  constexpr Vec3() : m_x{0}, m_y{0}, m_z{0} {} //default constructor
+  constexpr Vec3() : x_{0}, y_{0}, z_{0} {} //default constructor
 
-  constexpr Vec3(T x_f, T y_f, T z_f) : m_x{x_f}, m_y{y_f}, m_z{z_f} {} // constructor
+  constexpr Vec3(float x_f, float y_f, float z_f) : x_{x_f}, y_{y_f}, z_{z_f} {} // constructor
   
-  constexpr explicit Vec3(const Normal3<T>& normal) noexcept 
-    :m_x{normal.x()}, 
-     m_y{normal.y()},
-     m_z{normal.z()} 
-  {}
+  constexpr explicit Vec3(const Normal3& normal) noexcept;
   
 
-  constexpr explicit Vec3(const Point3<T>& point) noexcept 
-    :m_x{point.x()}, 
-     m_y{point.y()},
-     m_z{point.z()} 
-  {
-    assert(!hasNaNs());
-  }
+  constexpr explicit Vec3(const Point3& point) noexcept;
 
-  [[nodiscard]] constexpr T x() const noexcept { return m_x; }
+  [[nodiscard]] constexpr float x() const noexcept { return x_; }
 
-  [[nodiscard]] constexpr T y() const noexcept { return m_y; }
+  [[nodiscard]] constexpr float y() const noexcept { return y_; }
 
-  [[nodiscard]] constexpr T z() const noexcept{ return m_z; }
+  [[nodiscard]] constexpr float z() const noexcept{ return z_; }
 
-  [[nodiscard]] constexpr Vec3 operator-() const noexcept { return Vec3(-m_x, -m_y, -m_z); }
+  [[nodiscard]] constexpr float& x() noexcept { return x_; }
 
-  [[nodiscard]] constexpr T operator[](int idx) const { 
-    assert(idx < static_cast<int>(3) && idx >= static_cast<int>(0));
-    return idx == 0 ?  m_x 
-                    : idx == 1 ? m_y
-                    : m_z;
-  }
+  [[nodiscard]] constexpr float& y() noexcept { return y_; }
 
-  [[nodiscard]] constexpr T& operator[](int idx) { 
-    assert(idx < static_cast<int>(3) && idx >= static_cast<int>(0));
-    return idx == 0 ?  m_x 
-                    : idx == 1 ? m_y
-                    : m_z;
-  }
+  [[nodiscard]] constexpr float& z() noexcept{ return z_; }
 
-  [[nodiscard]] constexpr Vec3<T>& operator+=(const Vec3<T>& vec) const noexcept {
-    m_x += vec.x();
-    m_y += vec.y();
-    m_z += vec.z();
-    return *this;
-  }
+  [[nodiscard]] constexpr Vec3 operator-() const noexcept;
 
-  [[nodiscard]] constexpr Vec3<T>& operator-=(const Vec3<T>& vec) const noexcept {
-    m_x -= vec.x();
-    m_y -= vec.y();
-    m_z -= vec.z();
-    return *this;
-  }
+  [[nodiscard]] constexpr float operator[](int idx) const;
 
-  [[nodiscard]] constexpr Vec3<T>& operator*=(const Vec3<T>& vec) const noexcept {
-    m_x *= vec.x();
-    m_y *= vec.y();
-    m_z *= vec.z();
-    return *this;
-  }
+  [[nodiscard]] constexpr float& operator[](int idx);
 
-  [[nodiscard]] constexpr Vec3<T>& operator/=(const element_type denom) {
-    assert(denom != 0);
-    return (*this) *= static_cast<element_type>(1/denom);
-  }
+  [[nodiscard]] constexpr Vec3& operator+=(const Vec3& vec) noexcept;
 
-  [[nodiscard]] constexpr Vec3<T> operator+(const Vec3<T>& vec) const noexcept {
-    Vec3<T> temp = Vec3(this->x(), this->y(), this->z());
-    temp += vec;
-    return temp;
-  }
+  [[nodiscard]] constexpr Vec3& operator-=(const Vec3& vec) noexcept;
 
-  [[nodiscard]] constexpr Vec3<T> operator-(const Vec3<T>& vec) const noexcept {
-    Vec3<T> temp = Vec3(this->x(), this->y(), this->z());
-    temp -= vec;
-    return temp;
-  }
+  [[nodiscard]] constexpr Vec3& operator*=(const Vec3& vec) noexcept;
 
-  [[nodiscard]] constexpr T& dot(Vec3<T>& vec) const noexcept {
-    return this->m_x * vec.x() + this->m_y * vec.y() + this->m_z * vec.z();
-  }
+  [[nodiscard]] constexpr Vec3 operator/=(const float& denom);
+
+  [[nodiscard]] constexpr Vec3 operator+(const Vec3& vec) const noexcept;
+
+  [[nodiscard]] constexpr Vec3 operator-(const Vec3& vec) const noexcept;
+
+  [[nodiscard]] constexpr float dot(Vec3& vec) const noexcept;
   
-  [[nodiscard]] constexpr T squared_l2_norm() const noexcept { return m_x * m_x + m_y * m_y + m_z * m_z; }
+  [[nodiscard]] constexpr float squared_l2_norm() const noexcept;
 
-  [[nodiscard]] constexpr T norm() const { return std::sqrt(squared_l2_norm()); }
+  [[nodiscard]] constexpr float norm() const;
 
-  [[nodiscard]] constexpr Vec3<T> operator*=(T scalar) {
-    this->m_x *= scalar;
-    this->m_y *= scalar;
-    this->m_z *= scalar;
-    return *this;
-  }
+  [[nodiscard]] constexpr Vec3 operator*=(float scalar);
 
-  [[nodiscard]] constexpr Vec3<T> operator*(T scalar) {
-    auto temp = Vec3<T>(this->m_x, this->m_y, this->m_z);
-    temp *= scalar;
-    return temp;
-  }
+  [[nodiscard]] constexpr Vec3 operator*(float scalar) const;
   
-  [[nodiscard]] constexpr Vec3<T> operator/(T scalar) {
-    auto temp = Vec3<T>(this->m_x, this->m_y, this->m_z);
-    temp *= static_cast<element_type>(1)/scalar;
-    return temp;
-  }
+  [[nodiscard]] constexpr Vec3 operator/(float scalar) const;
 
-  [[nodiscard]] constexpr Vec3<T> abs() {
-    return Vec3<T>(std::abs(this->x()), std::abs(this->y()), std::abs(this->z()));
-  }
+  [[nodiscard]] constexpr Vec3 operator/(const Vec3& denom) const;
 
-  [[nodiscard]] constexpr bool hasNaNs() const noexcept {
-    return std::isnan(m_x)|| std::isnan(m_y) || std::isnan(m_z);
-  }
+  [[nodiscard]] constexpr Vec3 abs();
+
+  [[nodiscard]] constexpr bool hasNaNs() const noexcept;
 
 
-  [[nodiscard]] Vec3<T> cross(const Vec3<T>& vec) const noexcept {
-    auto vecx = vec.x();
-    auto vecy = vec.y();
-    auto vecz = vec.z();
-    return Vec3<T>((this->y()) * vecz) - (this->z() * vecy),
-    (this->z() * vecx) - (this->x() * vecz),
-    (this->x() * vecy) - (this->y() * vecx);
-  }
+  [[nodiscard]] Vec3 cross(const Vec3& vec) const noexcept;
 
 };
 
 
-/* -------- typedefs for Vec3                             -------- */
-using Vec3f0 = Vec3<float>;
-using Vec3f = Vec3<double>;
-using Vec3i = Vec3<int>;
-/* -------- typedefs for Vec3                             -------- */
 
 
 } //namespace geocold

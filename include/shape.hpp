@@ -6,9 +6,8 @@
 #include <memory>
 
 
-#include "definitions.hpp"
-#include "transform.hpp"
-#include "localdiffgeo.hpp"
+#include "common.hpp"
+// #include "transform.hpp"
 
 //all shapes are defined in object coordinate space
 //all spheres are defined with origin at the 
@@ -31,11 +30,24 @@ struct Shape {
       bool reverseorientation
     );
 
+  //the rays passed in are in world space, so shapes 
+  //are responsible for transforming them into object space if needed for 
+  //intersection tests.
+  //The intersection information returned must be in world space.
+  [[nodiscard]] virtual bool intersect(const Ray& ray, float* tHit, LocalDiffGeo* isect, bool testalphatexture = false) const = 0;
+
+  [[nodiscard]] virtual bool intersection_predicate(const Ray& ray, bool testalphatexture = false) const {
+    float tHit = ray.tmax;
+    //LocalDiffGeo a;
+
+  }
+
   [[nodiscard]] virtual float area() const = 0;
 
-  virtual LocalDiffGeo sample(const LocalDiffGeo& interaction, const Point3f0 point, float* pdf);
+  //virtual LocalDiffGeo sample(const LocalDiffGeo& interaction, const Point3f0 point, float* pdf);
 
-  virtual float solid_angle(const Point3f &p, int nSamples = 512) const;
+  //virtual float solid_angle(const Point3f &p, int nSamples = 512) const;
+
   [[nodiscard]] virtual BoundingBox3Df0 object_bound() const = 0;
 
   [[nodiscard]] BoundingBox3Df0 world_bound() const;

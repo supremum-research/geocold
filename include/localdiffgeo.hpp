@@ -5,7 +5,7 @@
 #include <memory>
 
 
-#include "common.hpp"
+#include "definitions.hpp"
 //#include "shape.hpp"
 #include "point.hpp"
 #include "vec3.hpp"
@@ -17,12 +17,9 @@ struct LocalDiffGeo {
   Point3f0 point; //point where the surface was hit. 3 * 32
   Normal3f0 gnorm; //geometric normal form PBRT 3 * 32
   Normal3f0 snorm; //shading normal from PBRT 3 * 32
-  
   float u; //for texture mapping, surface parametrizations 32
   float v; //32
-
   float time; //32 //all interactions have a time associated with them, intersection time
-
   Vec3f0 dpdu; //3*32
   Vec3f0 dpdv; //3*32
   std::shared_ptr<Shape> shape; //64

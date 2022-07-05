@@ -5,9 +5,9 @@
 #include <cmath>
 #include <algorithm>
 
-#include "ray.hpp"
-#include "common.hpp"
-
+#include "definitions.hpp"
+#include "point.hpp"
+#include "vec3.hpp"
 
 namespace geocold {
 
@@ -37,91 +37,49 @@ struct HitInterval {
 /// optimized intrsection test. 
 /// Designed for use with 
 /// a bounding volume hierarchy.
-template <typename T>
 struct BoundingBox3D {
-    Point3<T> pmin_;
-    Point3<T> pmax_;
+    Point3 pmin_;
+    Point3 pmax_;
 
     BoundingBox3D() noexcept {
-        T min_num = std::numeric_limits<T>::lowest();
-        T max_num =  std::numeric_limits<T>::max();
-        pmin_ = Point3<T>(max_num, max_num, max_num);
-        pmin_ = Point3<T>(min_num, min_num, min_num);
+        float min_num = std::numeric_limits<float>::lowest();
+        float max_num =  std::numeric_limits<float>::max();
+        pmin_ = Point3(max_num, max_num, max_num);
+        pmin_ = Point3(min_num, min_num, min_num);
     }
 
-    explicit BoundingBox3D(const Point3<T>& point)  
+    explicit BoundingBox3D(const Point3& point)  
         :pmin_{point}
         ,pmax_{point}
     {}
 
-    BoundingBox3D(const Point3<T>& point1, const Point3<T>& point2) 
+    BoundingBox3D(const Point3& point1, const Point3& point2) 
         :pmin_{std::min(point1.x(), point2.x()), std::min(point1.y(), point2.y()), std::min(point1.z(), point2.z())}
         ,pmax_{std::max(point1.x(), point2.x()), std::max(point1.y(), point2.y()), std::max(point1.z(), point2.z())}
     {}
 
-    const Point3<T>& operator[](int f_i) const {
-        return f_i == 0 ? pmin_ : pmax_;
-    }
+    const Point3& operator[](int f_i) const;
 
-    Point3<T>& operator[](int f_i) {
-        return f_i == 0 ? pmin_ : pmax_;
-    }
+    Point3& operator[](int f_i);
 
-    BoundingBox3D<T> box_union(const BoundingBox3D<T>& box) const {
-        return BoundingBox3D<T>{
-            Point3<T>{ 
-                std::min((*this).pmin_.x(), box.pmin_.x()),
-                std::min((*this).pmin_.y(), box.pmin_.y()),
-                std::min((*this).pmin_.z(), box.pmin_.z())
-            },
-            Point3<T>{
-                std::max((*this).pmax_.x(), box.pmax_.x()),
-                std::max((*this).pmax_.y(), box.pmax_.y()),
-                std::max((*this).pmax_.z(), box.pmax_.z())
-            }
-        };
-    }
+    [[nodiscard]] BoundingBox3D box_union(const BoundingBox3D& box) const;
 
-    Vec3<T> diagonal() const noexcept {
-        return pmax_ - pmin_;
-    }
+    Vec3 diagonal() const noexcept;
 
     [[nodiscard]]
-    T surfacearea() const noexcept {
-        auto d = this->diagonal();
-        return 2 * (d.x() * d.y() + d.y() * d.z() + d.x() * d.z());
-    }
+    float surfacearea() const noexcept;
 
     [[nodiscard]]
-    T volume() const {
-        auto d = this->diagonal();
-        return d.x() * d.y() * d.z();
-    }
+    float volume() const;
 
-    Vec3<T> offset(const Point3<T>& point) const {
-        return (point - this->pmin_) / (this->pmax_ - this->pmin_);
-    }
+    [[nodiscard]]
+    Vec3 offset(const Point3& point) const;
 
-    [[nodiscard]] Axis max_extent() const noexcept {
-        auto d = this->diagonal();
-        if ( d.x() > d.y() && d.x() > d.z() ) {
-            return Axis::X;
-        } else if ( d.y() > d.z() ) {
-            return Axis::Y; 
-        } else {
-            return Axis::Z;
-        }
-    }
+    [[nodiscard]] Axis max_extent() const noexcept;
 
     //lerp linearly interpolates between corners of the 
     //box by given amount in each dimension.
-    [[nodiscard]] Point3<T> lerp(const Point3<T>& t) const {
-        return Point3<T>{
-            linearinterpolate(t.x(), pmin_.x(), pmax_.x()),
-            linearinterpolate(t.y(), pmin_.y(), pmax_.y()),
-            linearinterpolate(t.z(), pmin_.z(), pmax_.z())
-        };
-    }
+    [[nodiscard]] Point3 lerp(const Point3& t) const;
 
 
     [[nodiscard]] bool intersect_ray(Ray& ray, HitInterval* interv) const {
@@ -159,7 +117,7 @@ struct BoundingBox3D {
     //between tnear and tfar in earlier method.
     //
     //I definitely didn't write this on my own 
-    [[nodiscard]] bool rapidintersect(Ray ray, const Vec3f0 invdir, const int dirisneg[3]) const {
+    [[nodiscard]] bool rapidintersect(Ray ray, const Vec3 invdir, const int dirisneg[3]) const {
       const BoundingBox3D bounds = *this;
       float tmin = (bounds[dirisneg[0]].x() - ray.origin_.x()) * invdir.x();
       float tmax = (bounds[1 - dirisneg[0]].x() - ray.origin_.x()) * invdir.x();
@@ -203,9 +161,6 @@ struct BoundingBox3D {
 
 }; //class BoundingBox3D
 
-using BoundingBox3Df = BoundingBox3D<double>;
-using BoundingBox3Df0 = BoundingBox3D<float>;
-using BoundingBox3Di = BoundingBox3D<int>;
 
 
 

@@ -5,9 +5,7 @@
 
 #include <limits>
 
-
-#include "vec3.hpp"
-#include "point.hpp"
+#include "definitions.hpp"
 #include "common.hpp"
 
 namespace geocold {
@@ -53,7 +51,7 @@ struct Ray {
   }
 
   Point3f0 operator()(float param) const {
-    return (origin_ + param * direction_);
+    return (origin_ +  direction_ * param);
   }
 
 };
