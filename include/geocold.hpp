@@ -9,7 +9,6 @@
 #include "light.hpp"
 #include "line.hpp"
 #include "localdiffgeo.hpp"
-#include "normal.hpp"
 #include "objloader.hpp"
 #include "point.hpp"
 #include "ray.hpp"
@@ -17,6 +16,7 @@
 #include "shape.hpp"
 #include "transform.hpp"
 #include "vec3.hpp"
+#include "normal.hpp"
 //#include "experimental/define.hpp"
 
 

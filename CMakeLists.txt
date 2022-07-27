@@ -113,7 +113,7 @@ endif()
 set (GEOCOLD_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/include/bounding_boxes.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/common.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/include/definitions.hpp
+	# ${CMAKE_CURRENT_SOURCE_DIR}/include/definitions.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/geocold.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/light.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/include/line.hpp
